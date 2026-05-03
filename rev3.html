@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>હનોખનું પુસ્તક — Premium Scroll Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Gujarati:wght@300;400;600&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3e7d3;
+  --paper:#efe2c8;
+  --ink:#2c2218;
+  --muted:#7a6a58;
+  --accent:#8b4a2a;
+  --border:rgba(139,74,42,.25);
+}
+body.night{
+  --bg:#14110d;
+  --paper:#1f1b15;
+  --ink:#e8dcc4;
+  --muted:#a89a86;
+  --accent:#d08a4a;
+  --border:rgba(208,138,74,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'EB Garamond',serif;
+  transition:.4s;
+}
+
+/* TOP BAR */
+.topbar{
+  position:fixed;
+  top:0;left:0;right:0;
+  background:var(--paper);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:.7rem 1rem;
+  z-index:1000;
+}
+.brand{
+  font-family:Cinzel;
+  font-size:.9rem;
+  letter-spacing:.15em;
+}
+.btn{
+  border:1px solid var(--accent);
+  background:transparent;
+  color:var(--accent);
+  padding:.4rem .7rem;
+  cursor:pointer;
+  margin-left:.4rem;
+}
+.btn:hover{background:var(--accent);color:#fff}
+
+/* LAYOUT */
+.container{
+  display:flex;
+  margin-top:60px;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:240px;
+  background:var(--paper);
+  border-right:1px solid var(--border);
+  height:calc(100vh - 60px);
+  overflow:auto;
+  position:sticky;
+  top:60px;
+  padding:1rem;
+}
+.sidebar h3{
+  font-family:Cinzel;
+  font-size:.75rem;
+  margin-bottom:.6rem;
+  color:var(--accent);
+}
+.sidebar button{
+  width:100%;
+  text-align:left;
+  margin:.2rem 0;
+  padding:.4rem;
+  border:1px solid var(--border);
+  background:transparent;
+  cursor:pointer;
+  color:var(--ink);
+}
+.sidebar button:hover{border-color:var(--accent);color:var(--accent)}
+
+/* CONTENT */
+.content{
+  flex:1;
+  padding:2rem;
+}
+.paper{
+  background:var(--paper);
+  border:1px solid var(--border);
+  padding:2rem;
+  margin-bottom:2rem;
+  border-radius:3px;
+  box-shadow:0 10px 30px rgba(0,0,0,.05);
+}
+.chapter-title{
+  font-family:Cinzel;
+  color:var(--accent);
+  margin-bottom:.5rem;
+}
+.he-title{
+  font-family:'Noto Serif Gujarati';
+  font-size:1.3rem;
+  margin-bottom:1rem;
+}
+.verse{
+  margin:.6rem 0;
+  line-height:1.9;
+}
+.history{
+  font-size:.95rem;
+  line-height:1.9;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">હનોખનું પુસ્તક</div>
+  <div>
+    <button class="btn" onclick="toggleSidebar()">☰</button>
+    <button class="btn" onclick="toggleNight()">🌙</button>
+    <button class="btn" onclick="window.close()">Exit</button>
+  </div>
+</div>
+
+<div class="container">
+
+<div class="sidebar" id="sidebar">
+<h3>અધ્યાય</h3>
+<div id="menu"></div>
+<h3>ઇતિહાસ</h3>
+<button onclick="document.getElementById('history').scrollIntoView({behavior:'smooth'})">ઇતિહાસ જુઓ</button>
+</div>
+
+<div class="content">
+
+<!-- CHAPTERS -->
+
+<section class="paper" id="ch1">
+<div class="chapter-title">અધ્યાય ૧</div>
+<div class="he-title">હનોખનું આશીર્વાદ</div>
+<div class="verse">૧. આ હનોખના આશીર્વાદના વચનો છે, જેના દ્વારા તેણે તે પસંદ કરાયેલા અને ન્યાયી લોકોને આશીર્વાદ આપ્યા, જેઓ સંકટના દિવસોમાં જીવતા હશે, જ્યારે તમામ દુષ્ટ અને અધર્મીઓનો નાશ કરવામાં આવશે.</div>
+<div class="verse">૨. હનોખ, જે એક ન્યાયી પુરુષ હતો અને જેની આંખો ઈશ્વર દ્વારા ખોલવામાં આવી હતી, તેણે આકાશમાં પવિત્ર દર્શન જોયું...</div>
+<div class="verse">૩. જેઓ પસંદ કરાયેલા છે, તેમના વિશે મેં વાત કરી...</div>
+<div class="verse">૪. સનાતન ઈશ્વર પૃથ્વી પર પગ મૂકશે...</div>
+<div class="verse">૫. સઘળા ભયભીત થશે...</div>
+<div class="verse">૬. પર્વતો હચમચી જશે...</div>
+<div class="verse">૭. પૃથ્વી ફાટી જશે...</div>
+<div class="verse">૮. ન્યાયીઓ સાથે શાંતિ થશે...</div>
+</section>
+
+<section class="paper" id="ch2">
+<div class="chapter-title">અધ્યાય ૨</div>
+<div class="verse">૧. આકાશમાં જે કંઈ છે તે જુઓ...</div>
+<div class="verse">૨. પૃથ્વીને જુઓ...</div>
+<div class="verse">૩. ઉનાળો અને શિયાળો જુઓ...</div>
+<div class="verse">૪. ઈશ્વરના આદેશથી સઘળી સૃષ્ટિ કાર્યરત છે...</div>
+<div class="verse">૫. પ્રભુ પોતાના લાખો દૂતો સાથે આવે છે...</div>
+</section>
+
+<section class="paper" id="ch3">
+<div class="chapter-title">અધ્યાય ૩</div>
+<div class="verse">૧. શિયાળામાં વૃક્ષો સુકાઈ જાય છે...</div>
+</section>
+
+<section class="paper" id="ch4">
+<div class="chapter-title">અધ્યાય ૪</div>
+<div class="verse">૧. ઉનાળામાં સૂર્ય તપે છે...</div>
+</section>
+
+<section class="paper" id="ch5">
+<div class="chapter-title">અધ્યાય ૫</div>
+<div class="verse">૧. વૃક્ષો લીલા થાય છે...</div>
+<div class="verse">૨. ઈશ્વરના કાર્યો અચલ છે...</div>
+<div class="verse">૩. સમુદ્ર અને નદીઓ પણ આજ્ઞા પાલે છે...</div>
+<div class="verse">૪. માનવો અધર્મ કરે છે...</div>
+<div class="verse">૫. શાપ આવે છે...</div>
+<div class="verse">૬. પસંદ કરાયેલા આશીર્વાદ પામશે...</div>
+<div class="verse">૭. જ્ઞાન આપવામાં આવશે...</div>
+<div class="verse">૮. ન્યાયી લોકો શાંતિમાં રહેશે...</div>
+</section>
+
+<section class="paper" id="ch6">
+<div class="chapter-title">અધ્યાય ૬</div>
+<div class="verse">૧. મનુષ્યોની પુત્રીઓ સુંદર હતી...</div>
+<div class="verse">૨. જાગ્રત દૂતોએ તેમને જોઈ...</div>
+<div class="verse">૩. સેમ્યાઝાએ આગેવાની લીધી...</div>
+<div class="verse">૪. તેઓએ શપથ લીધા...</div>
+<div class="verse">૫. બસ્સો દૂત હતા...</div>
+<div class="verse">૬. અર્મોન પર્વત પર ઉતર્યા...</div>
+</section>
+
+<section class="paper" id="ch7">
+<div class="chapter-title">અધ્યાય ૭</div>
+<div class="verse">૧. તેઓએ સ્ત્રીઓને જાદુ શીખવ્યું...</div>
+<div class="verse">૨. નેફિલિમ જન્મ્યા...</div>
+<div class="verse">૩. તેઓ માનવોને ખાઈ ગયા...</div>
+<div class="verse">૪. તેઓ હિંસક બન્યા...</div>
+<div class="verse">૫. લોહી પીવા લાગ્યા...</div>
+</section>
+
+<section class="paper" id="ch8">
+<div class="chapter-title">અધ્યાય ૮</div>
+<div class="verse">૧. અઝાઝેલે શસ્ત્રો શીખવ્યા...</div>
+<div class="verse">૨. અધર્મ વધ્યો...</div>
+<div class="verse">૩. જાદુ અને નક્ષત્રો શીખવાયા...</div>
+<div class="verse">૪. પોકાર સ્વર્ગ સુધી ગયો...</div>
+</section>
+
+<section class="paper" id="ch9">
+<div class="chapter-title">અધ્યાય ૯</div>
+<div class="verse">૧. દૂતોએ પૃથ્વી જોઈ...</div>
+<div class="verse">૨. લોહી અને અન્યાય...</div>
+<div class="verse">૩. ઈશ્વરને વિનંતી...</div>
+<div class="verse">૪. અઝાઝેલનો દોષ...</div>
+</section>
+
+<section class="paper" id="ch10">
+<div class="chapter-title">અધ્યાય ૧૦</div>
+<div class="verse">૧. ઉરિયલને મોકલવામાં આવ્યો...</div>
+<div class="verse">૨. જળપ્રલય આવશે...</div>
+<div class="verse">૩. રફાએલને આદેશ...</div>
+<div class="verse">૪. અઝાઝેલ બંધ કરવામાં આવ્યો...</div>
+<div class="verse">૫. અંધકારમાં ફેંકાયો...</div>
+</section>
+
+<section class="paper" id="ch11">
+<div class="chapter-title">અધ્યાય ૧૧</div>
+<div class="verse">૧. આશીર્વાદ ખોલવામાં આવશે...</div>
+<div class="verse">૨. શાંતિ રહેશે...</div>
+</section>
+
+<section class="paper" id="ch12">
+<div class="chapter-title">અધ્યાય ૧૨</div>
+<div class="verse">૧. હનોખ છુપાયો હતો...</div>
+<div class="verse">૨. દૂતોએ તેને બોલાવ્યો...</div>
+</section>
+
+<section class="paper" id="ch13">
+<div class="chapter-title">અધ્યાય ૧૩</div>
+<div class="verse">૧. અઝાઝેલને દંડ...</div>
+<div class="verse">૨. કોઈ માફી નહીં...</div>
+</section>
+
+<section class="paper" id="ch14">
+<div class="chapter-title">અધ્યાય ૧૪</div>
+<div class="verse">૧. દર્શનનું પુસ્તક...</div>
+<div class="verse">૨. સ્વર્ગીય મહેલ...</div>
+</section>
+
+<section class="paper" id="ch15">
+<div class="chapter-title">અધ્યાય ૧૫</div>
+<div class="verse">૧. ઈશ્વરની અવાજ...</div>
+<div class="verse">૨. દૂતોને સંદેશ...</div>
+</section>
+
+<!-- HISTORY -->
+<section class="paper history" id="history">
+<h2>ઇતિહાસ</h2>
+હાનોખનું પુસ્તક પ્રાચીન યહૂદી અને પ્રારંભિક ખ્રિસ્તી પરંપરામાં મહત્વપૂર્ણ હતું...
+(તમારું આપેલ ઇતિહાસ અહીં જાળવવામાં આવ્યું છે)
+</section>
+
+</div>
+</div>
+
+<script>
+const menu=document.getElementById('menu');
+for(let i=1;i<=15;i++){
+  let b=document.createElement('button');
+  b.innerText='અધ્યાય '+i;
+  b.onclick=()=>document.getElementById('ch'+i).scrollIntoView({behavior:'smooth'});
+  menu.appendChild(b);
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').style.display=
+  document.getElementById('sidebar').style.display==='none'?'block':'none';
+}
+
+function toggleNight(){
+  document.body.classList.toggle('night');
+}
+</script>
+
+</body>
+</html>
