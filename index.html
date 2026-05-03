@@ -1,24 +1,44 @@
 <!DOCTYPE html>
-<html lang="gu">
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>હનોખનું પુસ્તક</title>
-<link rel="stylesheet" href="./style.css"/>
+  <meta charset="UTF-8">
+  <title>Book of Enoch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- IMPORTANT for GitHub Pages path safety -->
+  <base href="/Book-of-Enoch/">
 </head>
 
 <body>
 
-<!-- MAIN APP CONTAINER -->
-<div id="app"></div>
+  <!-- ✅ COVER PAGE (REQUIRED) -->
+  <div id="cover">
+    <h1>The Book of Enoch</h1>
+    <p>Loading sacred text...</p>
+  </div>
 
-<!-- ENGINE LOAD ORDER -->
-<script src="./engine/storage.js"></script>
-<script src="./engine/search.js"></script>
-<script src="./engine/reader.js"></script>
+  <!-- ✅ MAIN APP (REQUIRED) -->
+  <div id="app" style="display:none;">
 
-<!-- APP ENTRY -->
-<script src="./app.js"></script>
+    <h1 class="title">The Book of Enoch</h1>
+
+    <!-- Tabs injected here -->
+    <div id="tabs" class="tabs"></div>
+
+    <!-- Content injected here -->
+    <div id="content" class="content"></div>
+
+  </div>
+
+  <!-- ENGINE SCRIPTS -->
+  <script src="./engine/storage.js"></script>
+  <script src="./engine/search.js"></script>
+  <script src="./engine/reader.js"></script>
+
+  <!-- MAIN APP -->
+  <script src="app.js"></script>
 
 </body>
 </html>
