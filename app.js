@@ -31,17 +31,13 @@ async function loadBook() {
   const content = document.getElementById("content");
 
   try {
-    const res = await fetch("./data/chapters.json");
+    const res = await fetch("/Book-of-Enoch/data/chapters.json");
 
     if (!res.ok) {
-      throw new Error("chapters.json not found");
+      throw new Error("chapters.json not found on GitHub Pages");
     }
 
     chaptersData = await res.json();
-
-    if (!Array.isArray(chaptersData)) {
-      throw new Error("chapters.json must be an array");
-    }
 
     initUI();
     renderChapter(0);
@@ -49,15 +45,18 @@ async function loadBook() {
   } catch (err) {
     console.error(err);
 
-    if (content) {
-      content.innerHTML = `
-        <div style="color:red;">
-          ❌ Failed to load chapters.json<br><br>
-          Make sure you are running a local server:<br>
-          <code>python -m http.server</code>
-        </div>
-      `;
-    }
+    content.innerHTML = `
+      <div style="color:red; padding:10px;">
+        ❌ GitHub Pages Load Failed<br><br>
+
+        Check:<br>
+        1. /data/chapters.json is committed<br>
+        2. File path is correct (case-sensitive)<br>
+        3. Try opening JSON directly in browser<br><br>
+
+        Error: ${err.message}
+      </div>
+    `;
   }
 }
 
