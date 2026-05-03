@@ -1,31 +1,33 @@
 // =========================
-// SAFE GLOBAL STATE
+// GLOBAL STATE
 // =========================
 let chaptersData = [];
 let currentIndex = 0;
 
 // =========================
-// SAFE INIT (prevents blank page)
+// BOOT (SAFE FOR GITHUB PAGES)
 // =========================
 document.addEventListener("DOMContentLoaded", () => {
+
   const cover = document.getElementById("cover");
   const app = document.getElementById("app");
 
   if (!cover || !app) {
-    document.body.innerHTML = "❌ Missing #cover or #app in HTML";
+    document.body.innerHTML =
+      "❌ Missing #cover or #app in HTML";
     return;
   }
 
-  // Cover timer
   setTimeout(() => {
     cover.style.display = "none";
     app.style.display = "block";
     loadBook();
   }, 10000);
+
 });
 
 // =========================
-// LOAD BOOK DATA (SAFE FETCH)
+// LOAD BOOK (FIXED FOR YOUR JSON STRUCTURE)
 // =========================
 async function loadBook() {
   const content = document.getElementById("content");
@@ -34,10 +36,17 @@ async function loadBook() {
     const res = await fetch("/Book-of-Enoch/data/chapters.json");
 
     if (!res.ok) {
-      throw new Error("chapters.json not found on GitHub Pages");
+      throw new Error("chapters.json not found");
     }
 
-    chaptersData = await res.json();
+    const data = await res.json();
+
+    // ✅ FIX: your structure uses data.chapters
+    if (!data.chapters || !Array.isArray(data.chapters)) {
+      throw new Error("chapters.json must contain 'chapters' array");
+    }
+
+    chaptersData = data.chapters;
 
     initUI();
     renderChapter(0);
@@ -46,15 +55,9 @@ async function loadBook() {
     console.error(err);
 
     content.innerHTML = `
-      <div style="color:red; padding:10px;">
-        ❌ GitHub Pages Load Failed<br><br>
-
-        Check:<br>
-        1. /data/chapters.json is committed<br>
-        2. File path is correct (case-sensitive)<br>
-        3. Try opening JSON directly in browser<br><br>
-
-        Error: ${err.message}
+      <div style="color:red;padding:10px;">
+        ❌ Failed to load book<br><br>
+        ${err.message}
       </div>
     `;
   }
@@ -67,22 +70,19 @@ function initUI() {
   const tabs = document.getElementById("tabs");
   const app = document.getElementById("app");
 
-  if (!tabs || !app) return;
-
   tabs.innerHTML = "";
 
-  // Create chapter tabs
   chaptersData.forEach((ch, index) => {
+
     const tab = document.createElement("div");
     tab.className = "tab";
-    tab.innerText = `Chapter ${ch.chapter}`;
+    tab.innerText = `Chapter ${ch.n}`;
 
     tab.onclick = () => renderChapter(index);
 
     tabs.appendChild(tab);
   });
 
-  // Prevent duplicate navbar
   if (!document.querySelector(".navbar")) {
     const nav = document.createElement("div");
     nav.className = "navbar";
@@ -97,15 +97,14 @@ function initUI() {
 }
 
 // =========================
-// RENDER CHAPTER
+// RENDER CHAPTER (HANDLES verses[])
 // =========================
 function renderChapter(index) {
-  const content = document.getElementById("content");
-  if (!content) return;
-
   currentIndex = index;
 
   const chapter = chaptersData[index];
+  const content = document.getElementById("content");
+
   if (!chapter) return;
 
   content.innerHTML = "";
@@ -114,15 +113,13 @@ function renderChapter(index) {
 
   // Title
   const title = document.createElement("h2");
-  title.innerText = chapter.title || "Untitled";
+  title.innerText = chapter.title;
   title.style.textAlign = "center";
   content.appendChild(title);
 
-  // Verses safe parsing
-  const text = chapter.text || "";
-  const verses = text.split("\n\n");
+  // ✅ FIX: iterate verses array
+  (chapter.verses || []).forEach(v => {
 
-  verses.forEach(v => {
     const div = document.createElement("div");
     div.className = "verse";
 
@@ -139,15 +136,15 @@ function renderChapter(index) {
 
     content.appendChild(div);
   });
+
+  localStorage.setItem("lastChapter", index);
 }
 
 // =========================
 // TAB HIGHLIGHT
 // =========================
 function highlightTab(index) {
-  const tabs = document.querySelectorAll(".tab");
-
-  tabs.forEach((tab, i) => {
+  document.querySelectorAll(".tab").forEach((tab, i) => {
     tab.classList.toggle("active", i === index);
   });
 }
