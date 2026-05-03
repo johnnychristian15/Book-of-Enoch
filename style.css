@@ -19,9 +19,10 @@ body {
 /* APP */
 .title {
   text-align: center;
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
+/* TABS */
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -35,16 +36,55 @@ body {
   background: #333;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .tab.active {
   background: #007bff;
 }
 
+/* CONTENT BOX */
 .content {
-  padding: 15px;
+  padding: 18px;
   background: #1a1a1a;
   margin: 10px;
-  border-radius: 8px;
-  min-height: 250px;
+  border-radius: 10px;
+  min-height: 300px;
+  line-height: 1.7;
+  font-size: 16px;
+  white-space: pre-line;
+}
+
+/* VERSE STYLE */
+.verse {
+  margin-bottom: 14px;
+  padding-left: 8px;
+  border-left: 3px solid #444;
+}
+
+.verse-number {
+  color: #00bfff;
+  font-weight: bold;
+  margin-right: 6px;
+}
+
+/* NAVIGATION BAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 15px;
+  margin: 10px;
+}
+
+.nav-btn {
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.nav-btn:hover {
+  background: #333;
 }
