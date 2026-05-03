@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>હનોખનું પુસ્તક — Logos Study Bible v5</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Gujarati:wght@300;400;600&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0d0a;
+  --surface:#17130f;
+  --card:#1e1812;
+  --ink:#f0e6d0;
+  --muted:#b8a995;
+  --accent:#c08a4a;
+  --border:rgba(192,138,74,.25);
+  --glow:rgba(192,138,74,.15);
+  --fs:1.12rem;
+}
+body{background:var(--bg);color:var(--ink);font-family:'EB Garamond',serif;min-height:100vh}
+.pg{display:none;padding:1rem}
+.pg.on{display:block}
+.wrap{max-width:900px;margin:0 auto}
+.history-top{background:var(--surface);border:1px solid var(--border);padding:1rem;margin-bottom:1rem;border-radius:6px}
+.history-title{font-family:Cinzel;color:var(--accent);font-size:.85rem;margin-bottom:.5rem}
+.history-text{color:var(--muted);line-height:1.7;font-size:.95rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.5rem}
+.ch-btn{background:var(--card);border:1px solid var(--border);padding:.7rem;color:var(--ink);cursor:pointer}
+.reader{background:var(--surface);padding:1.5rem;border-radius:8px;border:1px solid var(--border)}
+.verse{padding:.6rem;margin-bottom:.8rem;border-left:2px solid var(--accent);cursor:pointer}
+.verse:hover{background:var(--glow)}
+.btn{background:var(--card);border:1px solid var(--border);padding:.5rem 1rem;color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<!-- HISTORY TOP FULL -->
+<div class="history-top">
+<div class="history-title">📜 હાનોખ પુસ્તકનું ઇતિહાસ</div>
+<div class="history-text">
+હાનોખનું પુસ્તક (ખાસ કરીને ૧ હાનોખ) એક અત્યંત ગહન વિષય છે. આ પવિત્ર પુસ્તકને ક્યારેય બાઈબલમાંથી સત્તાવાર રીતે "દૂર" કરવામાં આવ્યું નહોતું, પરંતુ જ્યારે વિશ્વાસીઓના અગ્રેસરોએ પવિત્ર શાસ્ત્રના પુસ્તકોની અંતિમ યાદી તૈયાર કરી, ત્યારે મોટાભાગના આગેવાનોએ તેનો સમાવેશ કર્યો નહીં.
+
+અહીં તેની સચોટ અને વિગતવાર સમજૂતી છે:
+
+૧. શું તે અગાઉ પવિત્ર શાસ્ત્રનો ભાગ હતું?
+ખ્રિસ્તી મંડળીના પ્રારંભિક સમયમાં (પ્રથમ ત્રણ સદીઓ દરમિયાન), આજે આપણે જોઈએ છીએ તેવું કોઈ એક સંગઠિત "બાઈબલ" નહોતું...
+
+યહૂદાની પત્રિકા (કલમ ૧૪-૧૫) માં સીધી રીતે હાનોખનો ઉલ્લેખ છે.
+
+તર્તુલિયન જેવા પિતૃઓ તેને ઈશ્વરપ્રેરિત માનતા હતા.
+
+૨. કોણે અને ક્યારે નિર્ણય લીધો?
+યહૂદી સભા (ઈ.સ. ૯૦-૧૦૦) એ તેને સ્વીકાર્યું નહીં.
+ચોથી સદીની ધર્મસભાઓમાં તેને કેનનમાંથી બહાર રાખવામાં આવ્યું.
+
+૩. કેમ બાકાત રાખ્યું?
+લેખકત્વ વિવાદાસ્પદ હતું.
+નેફિલિમ અને દૂતોનું વર્ણન અસામાન્ય લાગ્યું.
+મસીહ વિશેનું વર્ણન અલગ હતું.
+
+૪. ઇથોપિયામાં કેમ બચ્યું?
+ઇથોપિયન ઓર્થોડોક્સ ચર્ચે તેને સાચવી રાખ્યું અને આજે પણ તેને પવિત્ર માને છે.
+</div>
+</div>
+
+<!-- MENU -->
+<div id="MENU" class="pg on">
+<div class="wrap">
+<h3 style="color:var(--accent)">📖 Chapters</h3>
+<div class="grid" id="GRID"></div>
+</div>
+</div>
+
+<!-- READER -->
+<div id="READER" class="pg">
+<div class="wrap">
+<button class="btn" onclick="back()">← Back</button>
+<div class="reader" id="CONTENT"></div>
+</div>
+</div>
+
+<script>
+
+const CHAPTERS=[
+{g:"અધ્યાય ૧",v:[
+"આ હનોખના આશીર્વાદના વચનો છે...",
+"હનોખ, જે એક ન્યાયી પુરુષ હતો...",
+"જેઓ પસંદ કરાયેલા છે તેમના વિશે...",
+"સનાતન ઈશ્વર પૃથ્વી પર પગ મૂકશે...",
+"સઘળા ભયભીત થશે...",
+"ઉંચા પર્વતો હચમચી જશે...",
+"પૃથ્વી ફાટી જશે...",
+"ન્યાયીઓ સાથે શાંતિ થશે..."
+]},
+{g:"અધ્યાય ૨",v:[
+"આકાશના જ્યોતિઓ નિર્ધારિત માર્ગે ચાલે છે...",
+"પૃથ્વી સ્થિર છે...",
+"ઋતુઓ ઈશ્વર દ્વારા નિયંત્રિત છે...",
+"સૃષ્ટિ અવિચલ છે...",
+"પ્રભુ ન્યાય કરવા આવે છે..."
+]},
+{g:"અધ્યાય ૩",v:["શિયાળામાં વૃક્ષો સુકાઈ જાય છે..."]},
+{g:"અધ્યાય ૪",v:["ઉનાળામાં સૂર્ય તપે છે..."]},
+{g:"અધ્યાય ૫",v:["વૃક્ષો ફળ આપે છે..."]},
+{g:"અધ્યાય ૬",v:["જાગ્રત દૂતો મનુષ્યની પુત્રીઓ જોઈને લોભી બન્યા..."]},
+{g:"અધ્યાય ૭",v:["નેફિલિમ પૃથ્વી પર આવ્યા..."]},
+{g:"અધ્યાય ૮",v:["અઝાઝેલે મનુષ્યોને શસ્ત્ર શીખવ્યા..."]},
+{g:"અધ્યાય ૯",v:["દૂતો પ્રભુને વિનંતી કરે છે..."]},
+{g:"અધ્યાય ૧૦",v:["ઈશ્વર ન્યાયની આજ્ઞા આપે છે..."]},
+{g:"અધ્યાય ૧૧",v:["આશીર્વાદના ભંડાર ખોલવામાં આવશે..."]},
+{g:"અધ્યાય ૧૨",v:["હનોખને દૂતોએ બોલાવ્યો..."]},
+{g:"અધ્યાય ૧૩",v:["અઝાઝેલને ઠપકો અપાયો..."]},
+{g:"અધ્યાય ૧૪",v:["હનોખે સ્વર્ગનું સિંહાસન જોયું..."]},
+{g:"અધ્યાય ૧૫",v:["દૂતોને તેમના પાપ વિશે ચેતવણી આપવામાં આવી..."]}
+];
+
+function loadMenu(){
+const g=document.getElementById('GRID');
+CHAPTERS.forEach((c,i)=>{
+const b=document.createElement('button');
+b.className='ch-btn';
+b.innerText=c.g;
+b.onclick=()=>open(i);
+g.appendChild(b);
+});
+}
+
+function open(i){
+let html='';
+CHAPTERS[i].v.forEach(v=>{
+html+=`<div class="verse">${v}</div>`;
+});
+document.getElementById('CONTENT').innerHTML=html;
+show('READER');
+}
+
+function back(){show('MENU')}
+function show(id){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.getElementById(id).classList.add('on')}
+
+loadMenu();
+</script>
+</body>
+</html>
