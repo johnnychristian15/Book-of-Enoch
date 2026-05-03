@@ -1,0 +1,15 @@
+{
+  "name": "Book of Enoch Study Bible",
+  "short_name": "Enoch",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1a1610",
+  "theme_color": "#8b4a2a",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
