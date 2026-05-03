@@ -1,48 +1,75 @@
 // =========================
-// GLOBAL STATE
+// SAFE GLOBAL STATE
 // =========================
 let chaptersData = [];
 let currentIndex = 0;
 
 // =========================
-// COVER PAGE FLOW (10s)
+// SAFE INIT (prevents blank page)
 // =========================
-window.onload = () => {
+document.addEventListener("DOMContentLoaded", () => {
+  const cover = document.getElementById("cover");
+  const app = document.getElementById("app");
+
+  if (!cover || !app) {
+    document.body.innerHTML = "❌ Missing #cover or #app in HTML";
+    return;
+  }
+
+  // Cover timer
   setTimeout(() => {
-    document.getElementById("cover").style.display = "none";
-    document.getElementById("app").style.display = "block";
+    cover.style.display = "none";
+    app.style.display = "block";
     loadBook();
   }, 10000);
-};
+});
 
 // =========================
-// LOAD CHAPTER DATA
+// LOAD BOOK DATA (SAFE FETCH)
 // =========================
 async function loadBook() {
+  const content = document.getElementById("content");
+
   try {
     const res = await fetch("./data/chapters.json");
 
     if (!res.ok) {
-      throw new Error("chapters.json missing or failed to load");
+      throw new Error("chapters.json not found");
     }
 
     chaptersData = await res.json();
+
+    if (!Array.isArray(chaptersData)) {
+      throw new Error("chapters.json must be an array");
+    }
 
     initUI();
     renderChapter(0);
 
   } catch (err) {
     console.error(err);
-    document.getElementById("content").innerText =
-      "❌ Load Error: chapters.json missing or invalid";
+
+    if (content) {
+      content.innerHTML = `
+        <div style="color:red;">
+          ❌ Failed to load chapters.json<br><br>
+          Make sure you are running a local server:<br>
+          <code>python -m http.server</code>
+        </div>
+      `;
+    }
   }
 }
 
 // =========================
-// INIT UI (TABS + NAV)
+// INIT UI
 // =========================
 function initUI() {
   const tabs = document.getElementById("tabs");
+  const app = document.getElementById("app");
+
+  if (!tabs || !app) return;
+
   tabs.innerHTML = "";
 
   // Create chapter tabs
@@ -51,55 +78,55 @@ function initUI() {
     tab.className = "tab";
     tab.innerText = `Chapter ${ch.chapter}`;
 
-    tab.onclick = () => {
-      renderChapter(index);
-    };
+    tab.onclick = () => renderChapter(index);
 
     tabs.appendChild(tab);
   });
 
-  // Add navigation bar once
-  const nav = document.createElement("div");
-  nav.className = "navbar";
+  // Prevent duplicate navbar
+  if (!document.querySelector(".navbar")) {
+    const nav = document.createElement("div");
+    nav.className = "navbar";
 
-  nav.innerHTML = `
-    <button class="nav-btn" onclick="prevChapter()">⬅ Previous</button>
-    <button class="nav-btn" onclick="nextChapter()">Next ➡</button>
-  `;
+    nav.innerHTML = `
+      <button class="nav-btn" onclick="prevChapter()">⬅ Previous</button>
+      <button class="nav-btn" onclick="nextChapter()">Next ➡</button>
+    `;
 
-  document.getElementById("app").appendChild(nav);
+    app.appendChild(nav);
+  }
 }
 
 // =========================
-// RENDER CHAPTER CONTENT
+// RENDER CHAPTER
 // =========================
 function renderChapter(index) {
+  const content = document.getElementById("content");
+  if (!content) return;
+
   currentIndex = index;
 
   const chapter = chaptersData[index];
-  const content = document.getElementById("content");
+  if (!chapter) return;
 
   content.innerHTML = "";
 
-  // Highlight active tab
   highlightTab(index);
 
   // Title
   const title = document.createElement("h2");
-  title.innerText = chapter.title;
+  title.innerText = chapter.title || "Untitled";
   title.style.textAlign = "center";
-  title.style.marginBottom = "15px";
-
   content.appendChild(title);
 
-  // Verse parsing (clean + readable)
-  const verses = chapter.text.split("\n\n");
+  // Verses safe parsing
+  const text = chapter.text || "";
+  const verses = text.split("\n\n");
 
   verses.forEach(v => {
     const div = document.createElement("div");
     div.className = "verse";
 
-    // Extract verse number if exists
     const match = v.match(/^(\d+)\.(.*)/);
 
     if (match) {
@@ -113,9 +140,6 @@ function renderChapter(index) {
 
     content.appendChild(div);
   });
-
-  // Save last position (optional future use)
-  localStorage.setItem("lastChapter", index);
 }
 
 // =========================
@@ -130,7 +154,7 @@ function highlightTab(index) {
 }
 
 // =========================
-// NAVIGATION FUNCTIONS
+// NAVIGATION
 // =========================
 function nextChapter() {
   if (currentIndex < chaptersData.length - 1) {
