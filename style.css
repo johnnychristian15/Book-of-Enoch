@@ -1,22 +1,22 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #111;
-  color: #fff;
+  font-family: Georgia, serif;
+  background: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+  background-color: #f4ecd8;
+  color: #2b1d0e;
 }
 
 /* COVER */
 #cover {
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: black;
   flex-direction: column;
-  text-align: center;
+  background: #f4ecd8;
 }
 
-/* APP */
+/* TITLE */
 .title {
   text-align: center;
   margin: 15px 0;
@@ -26,65 +26,58 @@ body {
 .tabs {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 6px;
   padding: 10px;
-  justify-content: center;
 }
 
 .tab {
   padding: 8px 12px;
-  background: #333;
+  background: #e6d3b3;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 14px;
+  border: 1px solid #c2a97a;
 }
 
 .tab.active {
-  background: #007bff;
+  background: #c9a66b;
+  color: #fff;
 }
 
-/* CONTENT BOX */
+/* CONTENT */
 .content {
-  padding: 18px;
-  background: #1a1a1a;
   margin: 10px;
+  padding: 20px;
+  background: rgba(255, 248, 235, 0.85);
   border-radius: 10px;
   min-height: 300px;
-  line-height: 1.7;
-  font-size: 16px;
-  white-space: pre-line;
+  line-height: 1.8;
+  font-size: 17px;
 }
 
-/* VERSE STYLE */
+/* VERSES */
 .verse {
   margin-bottom: 14px;
   padding-left: 8px;
-  border-left: 3px solid #444;
+  border-left: 3px solid #b08a5b;
 }
 
 .verse-number {
-  color: #00bfff;
   font-weight: bold;
-  margin-right: 6px;
+  color: #8b5e34;
 }
 
-/* NAVIGATION BAR */
+/* NAV */
 .navbar {
   display: flex;
   justify-content: space-between;
   padding: 10px 15px;
-  margin: 10px;
 }
 
 .nav-btn {
-  background: #222;
-  color: #fff;
-  border: 1px solid #444;
+  background: #e6d3b3;
+  border: 1px solid #c2a97a;
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
-}
-
-.nav-btn:hover {
-  background: #333;
 }
