@@ -116,7 +116,7 @@ function showHistory() {
   const content = document.getElementById("content");
 
   content.innerHTML = `
-    <h2 style="text-align:center;">History of the Book of Enoch</h2>
+    <h2 style="text-align:center;">હનોખના પુસ્તકનો ઇતિહાસ</h2>
 
     <p>
       હાનોખનું પુસ્તક (ખાસ કરીને ૧ હાનોખ) એક અત્યંત ગહન વિષય છે. આ પવિત્ર પુસ્તકને ક્યારેય બાઈબલમાંથી સત્તાવાર રીતે \"દૂર\" કરવામાં આવ્યું નહોતું, 
