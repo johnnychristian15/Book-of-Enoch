@@ -6,17 +6,73 @@ body {
   color: #2b1d0e;
 }
 
-/* COVER */
+/* ================= COVER ================= */
 #cover {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   background: #f4ecd8;
 }
 
-/* TITLE */
+.cover-wrapper {
+  max-width: 800px;
+  text-align: center;
+  padding: 40px;
+}
+
+.top-label {
+  letter-spacing: 2px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #8b5e34;
+}
+
+#cover h1 {
+  font-size: 42px;
+  margin: 10px 0;
+}
+
+#cover h2 {
+  font-size: 30px;
+  margin: 10px 0;
+  font-weight: normal;
+}
+
+.subtitle {
+  margin: 20px 0;
+  font-style: italic;
+}
+
+.meta {
+  margin: 20px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.author {
+  margin-top: 25px;
+  font-size: 14px;
+}
+
+.disclaimer {
+  margin-top: 25px;
+  font-size: 12px;
+  padding: 15px;
+  border: 1px solid #c2a97a;
+  background: rgba(255,255,255,0.4);
+}
+
+#enterBtn {
+  margin-top: 30px;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: 1px solid #8b5e34;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* ================= APP ================= */
 .title {
   text-align: center;
   margin: 15px 0;
@@ -41,7 +97,7 @@ body {
 
 .tab.active {
   background: #c9a66b;
-  color: #fff;
+  color: white;
 }
 
 /* CONTENT */
