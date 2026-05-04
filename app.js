@@ -1,11 +1,8 @@
-// =========================
-// GLOBAL STATE
-// =========================
 let chaptersData = [];
 let currentIndex = 0;
 
 // =========================
-// BOOT (SAFE FOR GITHUB PAGES)
+// BOOT
 // =========================
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -13,8 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = document.getElementById("app");
 
   if (!cover || !app) {
-    document.body.innerHTML =
-      "❌ Missing #cover or #app in HTML";
+    document.body.innerHTML = "❌ Missing #cover or #app";
     return;
   }
 
@@ -27,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // =========================
-// LOAD BOOK (FIXED FOR YOUR JSON STRUCTURE)
+// LOAD JSON (YOUR STRUCTURE FIXED)
 // =========================
 async function loadBook() {
   const content = document.getElementById("content");
@@ -35,45 +31,25 @@ async function loadBook() {
   try {
     const res = await fetch("/Book-of-Enoch/data/chapters.json");
 
-    if (!res.ok) {
-      throw new Error("chapters.json not found on GitHub Pages");
-    }
-
     const data = await res.json();
 
-    console.log("RAW DATA:", data); // DEBUG
-
-    // ✅ HARD SAFETY CHECK (prevents forEach crash)
     if (!data || !Array.isArray(data.chapters)) {
-      throw new Error(
-        "Invalid JSON structure: expected { chapters: [...] }"
-      );
+      throw new Error("Invalid JSON: expected { chapters: [] }");
     }
 
     chaptersData = data.chapters;
-
-    // ✅ SECOND SAFETY CHECK
-    if (!Array.isArray(chaptersData)) {
-      throw new Error("chapters is not an array");
-    }
 
     initUI();
     renderChapter(0);
 
   } catch (err) {
     console.error(err);
-
-    content.innerHTML = `
-      <div style="color:red;padding:10px;">
-        ❌ GitHub Pages Load Failed<br><br>
-        ${err.message}
-      </div>
-    `;
+    content.innerHTML = "❌ Failed to load book: " + err.message;
   }
 }
 
 // =========================
-// INIT UI
+// UI INIT (RESTORED HISTORY + CHAPTERS)
 // =========================
 function initUI() {
   const tabs = document.getElementById("tabs");
@@ -81,17 +57,23 @@ function initUI() {
 
   tabs.innerHTML = "";
 
-  chaptersData.forEach((ch, index) => {
+  // HISTORY TAB
+  const historyTab = document.createElement("div");
+  historyTab.className = "tab";
+  historyTab.innerText = "History";
+  historyTab.onclick = showHistory;
+  tabs.appendChild(historyTab);
 
+  // CHAPTER TABS
+  chaptersData.forEach((ch, index) => {
     const tab = document.createElement("div");
     tab.className = "tab";
     tab.innerText = `Chapter ${ch.n}`;
-
     tab.onclick = () => renderChapter(index);
-
     tabs.appendChild(tab);
   });
 
+  // NAV (once only)
   if (!document.querySelector(".navbar")) {
     const nav = document.createElement("div");
     nav.className = "navbar";
@@ -106,29 +88,24 @@ function initUI() {
 }
 
 // =========================
-// RENDER CHAPTER (HANDLES verses[])
+// CHAPTER RENDER
 // =========================
 function renderChapter(index) {
   currentIndex = index;
 
-  const chapter = chaptersData[index];
   const content = document.getElementById("content");
-
-  if (!chapter) return;
+  const chapter = chaptersData[index];
 
   content.innerHTML = "";
 
-  highlightTab(index);
+  highlightTab(index + 1); // +1 because history tab is 0
 
-  // Title
   const title = document.createElement("h2");
   title.innerText = chapter.title;
   title.style.textAlign = "center";
   content.appendChild(title);
 
-  // ✅ FIX: iterate verses array
   (chapter.verses || []).forEach(v => {
-
     const div = document.createElement("div");
     div.className = "verse";
 
@@ -137,7 +114,7 @@ function renderChapter(index) {
     if (match) {
       div.innerHTML = `
         <span class="verse-number">${match[1]}.</span>
-        <span>${match[2].trim()}</span>
+        <span>${match[2]}</span>
       `;
     } else {
       div.innerText = v;
@@ -145,21 +122,39 @@ function renderChapter(index) {
 
     content.appendChild(div);
   });
+}
 
-  localStorage.setItem("lastChapter", index);
+// =========================
+// HISTORY PAGE (RESTORED)
+// =========================
+function showHistory() {
+  const content = document.getElementById("content");
+
+  content.innerHTML = `
+    <h2 style="text-align:center;">History of the Book of Enoch</h2>
+
+    <p>
+      The Book of Enoch is an ancient Jewish text attributed to Enoch,
+      great-grandfather of Noah. It describes fallen angels, divine judgment,
+      and prophetic visions.
+    </p>
+
+    <p>
+      It is considered canonical in Ethiopian Orthodox tradition but not in most other biblical canons.
+    </p>
+  `;
 }
 
 // =========================
 // TAB HIGHLIGHT
 // =========================
 function highlightTab(index) {
-  document.querySelectorAll(".tab").forEach((tab, i) => {
-    tab.classList.toggle("active", i === index);
-  });
+  const tabs = document.querySelectorAll(".tab");
+  tabs.forEach((t, i) => t.classList.toggle("active", i === index));
 }
 
 // =========================
-// NAVIGATION
+// NAV
 // =========================
 function nextChapter() {
   if (currentIndex < chaptersData.length - 1) {
