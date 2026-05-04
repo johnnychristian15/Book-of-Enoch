@@ -13,32 +13,66 @@
 
 <body>
 
-  <!-- ✅ COVER PAGE (REQUIRED) -->
-  <div id="cover">
+<!-- ================= COVER PAGE ================= -->
+<div id="cover">
+
+  <div class="cover-wrapper">
+
+    <div class="top-label">
+      પવિત્ર ગ્રંથ · SACRED SCRIPTURE
+    </div>
+
     <h1>The Book of Enoch</h1>
-    <p>Loading ancient text...</p>
+    <h2>હનોખનું પુસ્તક</h2>
+
+    <div class="subtitle">
+      THE BOOK OF THE WATCHERS · જાગ્રત દૂતોનું પુસ્તક
+    </div>
+
+    <div class="meta">
+      ગુજરાતી અનુવાદ · Gujarati Translation<br>
+      મૂલ અરામિક, હિબ્રૂ અને ગ'એઝ ભાષામાંથી<br><br>
+      અધ્યાય ૧–૩૬ · Chapters 1–36
+    </div>
+
+    <div class="author">
+      DESIGNED & TRANSLATED BY<br>
+      <strong>Johnny Christian</strong><br>
+      Christian.Johnny@gmail.com<br>
+      May 2, 2026 · Version 1.0
+    </div>
+
+    <div class="disclaimer">
+      ⚠ LEGAL DISCLAIMER<br><br>
+      This translation is for educational and spiritual reference only.
+    </div>
+
+    <button id="enterBtn" onclick="enterBook()">
+      અધ્યાય પસંદ કરો →
+    </button>
+
   </div>
 
-  <!-- ✅ APP -->
-  <div id="app" style="display:none;">
+</div>
 
-    <h1 class="title">The Book of Enoch</h1>
+<!-- ================= APP ================= -->
+<div id="app" style="display:none;">
 
-    <!-- Tabs -->
-    <div id="tabs" class="tabs"></div>
+  <h1 class="title">The Book of Enoch</h1>
 
-    <!-- Content -->
-    <div id="content" class="content"></div>
+  <div id="tabs" class="tabs"></div>
 
-  </div>
+  <div id="content" class="content"></div>
 
-  <!-- ENGINE -->
-  <script src="./engine/storage.js"></script>
-  <script src="./engine/search.js"></script>
-  <script src="./engine/reader.js"></script>
+</div>
 
-  <!-- APP -->
-  <script src="app.js"></script>
+<!-- ENGINE -->
+<script src="./engine/storage.js"></script>
+<script src="./engine/search.js"></script>
+<script src="./engine/reader.js"></script>
+
+<!-- APP -->
+<script src="app.js"></script>
 
 </body>
 </html>
