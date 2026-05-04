@@ -36,17 +36,26 @@ async function loadBook() {
     const res = await fetch("/Book-of-Enoch/data/chapters.json");
 
     if (!res.ok) {
-      throw new Error("chapters.json not found");
+      throw new Error("chapters.json not found on GitHub Pages");
     }
 
     const data = await res.json();
 
-    // ✅ FIX: your structure uses data.chapters
-    if (!data.chapters || !Array.isArray(data.chapters)) {
-      throw new Error("chapters.json must contain 'chapters' array");
+    console.log("RAW DATA:", data); // DEBUG
+
+    // ✅ HARD SAFETY CHECK (prevents forEach crash)
+    if (!data || !Array.isArray(data.chapters)) {
+      throw new Error(
+        "Invalid JSON structure: expected { chapters: [...] }"
+      );
     }
 
     chaptersData = data.chapters;
+
+    // ✅ SECOND SAFETY CHECK
+    if (!Array.isArray(chaptersData)) {
+      throw new Error("chapters is not an array");
+    }
 
     initUI();
     renderChapter(0);
@@ -56,7 +65,7 @@ async function loadBook() {
 
     content.innerHTML = `
       <div style="color:red;padding:10px;">
-        ❌ Failed to load book<br><br>
+        ❌ GitHub Pages Load Failed<br><br>
         ${err.message}
       </div>
     `;
