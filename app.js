@@ -1,40 +1,27 @@
 let chaptersData = [];
 let currentIndex = 0;
 
-// =========================
-// BOOT
-// =========================
-document.addEventListener("DOMContentLoaded", () => {
+/* =========================
+   COVER FLOW (BUTTON ONLY)
+========================= */
+function enterBook() {
+  document.getElementById("cover").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  loadBook();
+}
 
-  const cover = document.getElementById("cover");
-  const app = document.getElementById("app");
-
-  if (!cover || !app) {
-    document.body.innerHTML = "❌ Missing #cover or #app";
-    return;
-  }
-
-  setTimeout(() => {
-    cover.style.display = "none";
-    app.style.display = "block";
-    loadBook();
-  }, 10000);
-
-});
-
-// =========================
-// LOAD JSON (YOUR STRUCTURE FIXED)
-// =========================
+/* =========================
+   LOAD DATA (GITHUB SAFE)
+========================= */
 async function loadBook() {
   const content = document.getElementById("content");
 
   try {
     const res = await fetch("/Book-of-Enoch/data/chapters.json");
-
     const data = await res.json();
 
     if (!data || !Array.isArray(data.chapters)) {
-      throw new Error("Invalid JSON: expected { chapters: [] }");
+      throw new Error("Invalid JSON structure");
     }
 
     chaptersData = data.chapters;
@@ -48,23 +35,21 @@ async function loadBook() {
   }
 }
 
-// =========================
-// UI INIT (RESTORED HISTORY + CHAPTERS)
-// =========================
+/* =========================
+   UI INIT
+========================= */
 function initUI() {
   const tabs = document.getElementById("tabs");
-  const app = document.getElementById("app");
-
   tabs.innerHTML = "";
 
-  // HISTORY TAB
+  /* HISTORY TAB */
   const historyTab = document.createElement("div");
   historyTab.className = "tab";
   historyTab.innerText = "History";
   historyTab.onclick = showHistory;
   tabs.appendChild(historyTab);
 
-  // CHAPTER TABS
+  /* CHAPTER TABS */
   chaptersData.forEach((ch, index) => {
     const tab = document.createElement("div");
     tab.className = "tab";
@@ -73,7 +58,7 @@ function initUI() {
     tabs.appendChild(tab);
   });
 
-  // NAV (once only)
+  /* NAV */
   if (!document.querySelector(".navbar")) {
     const nav = document.createElement("div");
     nav.className = "navbar";
@@ -83,13 +68,13 @@ function initUI() {
       <button class="nav-btn" onclick="nextChapter()">Next ➡</button>
     `;
 
-    app.appendChild(nav);
+    document.getElementById("app").appendChild(nav);
   }
 }
 
-// =========================
-// CHAPTER RENDER
-// =========================
+/* =========================
+   RENDER CHAPTER
+========================= */
 function renderChapter(index) {
   currentIndex = index;
 
@@ -98,7 +83,7 @@ function renderChapter(index) {
 
   content.innerHTML = "";
 
-  highlightTab(index + 1); // +1 because history tab is 0
+  highlightTab(index + 1);
 
   const title = document.createElement("h2");
   title.innerText = chapter.title;
@@ -124,9 +109,9 @@ function renderChapter(index) {
   });
 }
 
-// =========================
-// HISTORY PAGE (RESTORED)
-// =========================
+/* =========================
+   HISTORY PAGE
+========================= */
 function showHistory() {
   const content = document.getElementById("content");
 
@@ -135,27 +120,18 @@ function showHistory() {
 
     <p>
       The Book of Enoch is an ancient Jewish text attributed to Enoch,
-      great-grandfather of Noah. It describes fallen angels, divine judgment,
-      and prophetic visions.
+      describing visions, fallen angels, and divine judgment.
     </p>
 
     <p>
-      It is considered canonical in Ethiopian Orthodox tradition but not in most other biblical canons.
+      It is part of Ethiopian Orthodox canon but not in most modern Bibles.
     </p>
   `;
 }
 
-// =========================
-// TAB HIGHLIGHT
-// =========================
-function highlightTab(index) {
-  const tabs = document.querySelectorAll(".tab");
-  tabs.forEach((t, i) => t.classList.toggle("active", i === index));
-}
-
-// =========================
-// NAV
-// =========================
+/* =========================
+   NAVIGATION
+========================= */
 function nextChapter() {
   if (currentIndex < chaptersData.length - 1) {
     renderChapter(currentIndex + 1);
@@ -166,4 +142,13 @@ function prevChapter() {
   if (currentIndex > 0) {
     renderChapter(currentIndex - 1);
   }
+}
+
+/* =========================
+   TAB HIGHLIGHT
+========================= */
+function highlightTab(index) {
+  document.querySelectorAll(".tab").forEach((t, i) => {
+    t.classList.toggle("active", i === index);
+  });
 }
