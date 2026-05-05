@@ -74,14 +74,71 @@ function initUI() {
 }
 
 /* =========================
+   SEARCH LOGIC
+========================= */
+function executeSearch() {
+  const query = document.getElementById("searchInput").value.toLowerCase().trim();
+  const resultsDiv = document.getElementById("searchResults");
+  const contentDiv = document.getElementById("content");
+
+  if (!query) {
+    resultsDiv.style.display = "none";
+    contentDiv.style.display = "block";
+    return;
+  }
+
+  let matches = [];
+
+  chaptersData.forEach((chapter, index) => {
+    // Search in Chapter Title
+    if (chapter.title.toLowerCase().includes(query)) {
+      matches.push(`
+        <div style="margin-bottom:15px; padding:10px; background:rgba(176,138,91,0.1); border-radius:5px; cursor:pointer;" onclick="renderChapter(${index})">
+          <strong style="color:#8b5e34;">અધ્યાય ${chapter.n}: ${chapter.title}</strong>
+          <p style="font-size:0.9em; margin:2px 0;">(Title match)</p>
+        </div>
+      `);
+    }
+
+    // Search in Individual Verses
+    chapter.verses.forEach(verse => {
+      if (verse.toLowerCase().includes(query)) {
+        matches.push(`
+          <div style="margin-bottom:15px; padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="renderChapter(${index})">
+            <strong style="color:#8b5e34;">અધ્યાય ${chapter.n} Reference:</strong>
+            <p style="font-size:0.95em; margin:5px 0;">"...${verse}..."</p>
+          </div>
+        `);
+      }
+    });
+  });
+
+  // Toggle view from content to search results
+  contentDiv.style.display = "none";
+  resultsDiv.style.display = "block";
+  highlightTab(-1); // Remove tab highlights during search
+
+  if (matches.length > 0) {
+    resultsDiv.innerHTML = `<h3 style="text-align:center;">"${query}" માટેના પરિણામો</h3>` + matches.join("");
+  } else {
+    resultsDiv.innerHTML = `<h3 style="text-align:center;">"${query}"</h3><p style="text-align:center;">કોઈ સંદર્ભ મળ્યો નથી. (No references found.)</p>`;
+  }
+  window.scrollTo(0, 0);
+}
+
+/* =========================
    RENDER CHAPTER
 ========================= */
 function renderChapter(index) {
   currentIndex = index;
 
   const content = document.getElementById("content");
+  const resultsDiv = document.getElementById("searchResults");
   const chapter = chaptersData[index];
 
+  // Reset View and hide search results if open
+  resultsDiv.style.display = "none";
+  content.style.display = "block";
   content.innerHTML = "";
 
   highlightTab(index + 1);
@@ -108,97 +165,32 @@ function renderChapter(index) {
 
     content.appendChild(div);
   });
+  window.scrollTo(0, 0);
 }
 
 /* =========================
-   HISTORY PAGE (FULL UNEDITED TEXT)
+   HISTORY PAGE (CONSOLIDATED)
 ========================= */
 function showHistory() {
   const content = document.getElementById("content");
+  const resultsDiv = document.getElementById("searchResults");
   
+  resultsDiv.style.display = "none";
+  content.style.display = "block";
   highlightTab(0);
 
   content.innerHTML = `
     <h2 style="text-align:center;">હનોખના પુસ્તકનો ઇતિહાસ</h2>
-
     <div style="line-height:1.8; color: #2c2c2c; padding: 10px;">
-      <p>
-        હાનોખનું પુસ્તક (ખાસ કરીને ૧ હાનોખ) એક અત્યંત ગહન વિષય છે. આ પવિત્ર પુસ્તકને ક્યારેય બાઈબલમાંથી સત્તાવાર રીતે "દૂર" કરવામાં આવ્યું નહોતું, 
-        પરંતુ જ્યારે વિશ્વાસીઓના અગ્રેસરોએ પવિત્ર શાસ્ત્રના પુસ્તકોની અંતિમ યાદી તૈયાર કરી, ત્યારે મોટાભાગના આગેવાનોએ તેનો સમાવેશ કર્યો નહીં.
-      </p>
-
-      <p><b>અહીં તેની સચોટ અને વિગતવાર સમજૂતી છે:</b></p>
-
+      <p>હાનોખનું પુસ્તક (ખાસ કરીને ૧ હાનોખ) એક અત્યંત ગહન વિષય છે. આ પવિત્ર પુસ્તકને ક્યારેય બાઈબલમાંથી સત્તાવાર રીતે "દૂર" કરવામાં આવ્યું નહોતું, પરંતુ જ્યારે વિશ્વાસીઓના અગ્રેસરોએ પવિત્ર શાસ્ત્રના પુસ્તકોની અંતિમ યાદી તૈયાર કરી, ત્યારે મોટાભાગના આગેવાનોએ તેનો સમાવેશ કર્યો નહીં.</p>
       <p><b>૧. શું તે અગાઉ પવિત્ર શાસ્ત્રનો ભાગ હતું?</b></p>
-      <p>
-        ખ્રિસ્તી મંડળીના પ્રારંભિક સમયમાં (પ્રથમ ત્રણ સદીઓ દરમિયાન), આજે આપણે જોઈએ છીએ તેવું કોઈ એક સંગઠિત "બાઈબલ" નહોતું. 
-        વિવિધ પ્રદેશોની મંડળીઓ પાસે અલગ-અલગ પવિત્ર હસ્તપ્રતો હતી. તે સમયે હાનોખનું પુસ્તક વિશ્વાસીઓ અને પ્રભુના સેવકોમાં અત્યંત આદરણીય હતું.
-      </p>
+      <p>ખ્રિસ્તી મંડળીના પ્રારંભિક સમયમાં, આજે આપણે જોઈએ છીએ તેવું કોઈ એક સંગઠિત "બાઈબલ" નહોતું. તે સમયે હાનોખનું પુસ્તક અત્યંત આદરણીય હતું.</p>
       <p>શાસ્ત્રનો પુરાવો: નવા કરારમાં પ્રભુના શિષ્ય યહુદાની પત્રિકા (કલમ ૧૪-૧૫) માં સીધી રીતે હાનોખના પુસ્તકનું પવિત્ર વચન ટાંકવામાં આવ્યું છે.</p>
-      <p>મંડળીના પિતૃઓ: પ્રારંભિક મંડળીના મહાન સેવકો, જેમ કે તર્તુલિયન, આ પુસ્તકને ઈશ્વરપ્રેરિત માનતા હતા.</p>
-
       <p><b>૨. કોણે અને ક્યારે આ નિર્ણય લીધો?</b></p>
-      <p>આ કોઈ એક વ્યક્તિ દ્વારા લેવાયેલો નિર્ણય નહોતો, પરંતુ વર્ષોના પ્રાર્થનાપૂર્ણ મંથન પછી મંડળીના આગેવાનો દ્વારા લેવાયેલ સામૂહિક નિર્ણય હતો.</p>
-      <p>
-        યહૂદી સભા: અંદાજે ઈ.સ. ૯૦-૧૦૦ ના સમયગાળામાં, યહૂદી વિદ્વાનોએ જૂના કરારના પુસ્તકોની યાદી નક્કી કરી. તેઓએ હાનોખના પુસ્તકને સ્વીકાર્યું નહીં, કારણ કે તેઓ 
-        માનતા હતા કે પ્રબોધકો દ્વારા મળતી ઈશ્વરીય પ્રેરણાનો સમય મલાખી પ્રબોધક સાથે પૂર્ણ થયો હતો.
-      </p>
-      <p>
-        ખ્રિસ્તી ધર્મસભાઓ: ચોથી સદીમાં (મુખ્યત્વે લાઓદિકિયા અને કાર્થેજની ધર્મસભાઓમાં), મંડળીના આગેવાનોએ ભેગા મળીને જે પુસ્તકોને પવિત્ર આત્માની પ્રેરણાથી લખાયેલા માન્યા, 
-        તેની સત્તાવાર યાદી તૈયાર કરી. આ પ્રક્રિયામાં હાનોખના પુસ્તકને સ્થાન આપવામાં આવ્યું નહીં.
-      </p>
-
-      <p><b>૩. તેને કેમ બાકાત રાખવામાં આવ્યું?</b></p>
-      <p>તેના મુખ્ય કારણો આત્મિક અને વ્યવહારિક હતા:</p>
-      <p>લેખકત્વની વિશ્વસનીયતા: આ પુસ્તક હાનોખના નામે ઓળખાય છે, પરંતુ તે વાસ્તવમાં પવિત્ર હાનોખના સ્વર્ગારોહણના હજારો વર્ષો પછી લખાયેલું હતું.</p>
-      <p>
-        દૂતો અને નેફિલિમનું વર્ણન: આ પુસ્તકમાં પતન પામેલા દૂતો અને મનુષ્ય પુત્રીઓ વચ્ચેના સંબંધોનું જે વર્ણન છે, તે સમયના ઘણા સેવકોને મર્યાદા બહારનું અને અન્ય શાસ્ત્રવચનો સાથે અસંગત લાગ્યું હતું.
-      </p>
-      <p>
-        મસીહ વિશેની રજૂઆત: જોકે તેમાં "મનુષ્યના પુત્ર" વિશે ઉલ્લેખ છે, પરંતુ તે સુવાર્તાઓમાં પ્રગટ થયેલા પ્રભુ ઈસુ ખ્રિસ્તના સંપૂર્ણ સ્વરૂપ સાથે કેટલાક અંશે મેળ ખાતું નહોતું.
-      </p>
-
-      <p><b>૪. ઇથોપિયાના બાઈબલમાં તે કેમ સચવાયેલું છે?</b></p>
-      <p>
-        ઇથોપિયન ઓર્થોડોક્સ ટેવાહેડો મંડળી એ વિશ્વની અતિ પ્રાચીન ખ્રિસ્તી મંડળીઓમાંની એક છે. આ મંડળી ભૌગોલિક રીતે પશ્ચિમી સામ્રાજ્યોથી દૂર હોવાને કારણે, તેઓએ પોતાની પ્રાચીન પરંપરાઓ અને પવિત્ર લખાણોને અકબંધ રાખ્યા હતા.
-      </p>
-      <p>
-        સંરક્ષણ: જ્યારે બાકીની દુનિયામાં હાનોખના પુસ્તકની નકલો કરવાનું બંધ કરી દેવામાં આવ્યું, ત્યારે ઇથોપિયાની મંડળીએ તેને પવિત્ર અને આત્મિક રીતે મૂલ્યવાન ગણીને સાચવી રાખ્યું. સદીઓ સુધી આ પુસ્તક માત્ર ઇથોપિયાની પ્રાચીન ગીઝ (Ge'ez) ભાષામાં જ ઉપલબ્ધ હતું.
-      </p>
-      <p>
-        આત્મિક મહત્વ: ઇથોપિયાના વિશ્વાસીઓ આજે પણ તેને ઈશ્વરપ્રેરિત માને છે. તેઓના મતે, આ પુસ્તક નૂહના સમયના જળપ્રલય અને આત્મિક યુદ્ધના રહસ્યો સમજવામાં મદદરૂપ થાય છે.
-      </p>
-
-      <p style="margin-top: 20px; font-weight: bold;">પવિત્ર શાસ્ત્રની વિવિધ પરંપરાઓનો તફાવત</p>
-
-      <table style="width:100%; border-collapse: collapse; margin-top: 10px; border: 1px solid #ddd;">
-        <thead>
-          <tr style="background-color: #f2f2f2; text-align: left;">
-            <th style="padding: 10px; border: 1px solid #ddd;">ખ્રિસ્તી પરંપરા</th>
-            <th style="padding: 10px; border: 1px solid #ddd;">હાનોખનો સમાવેશ?</th>
-            <th style="padding: 10px; border: 1px solid #ddd;">કારણ</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="padding: 10px; border: 1px solid #ddd;">પ્રોટેસ્ટન્ટ</td>
-            <td style="padding: 10px; border: 1px solid #ddd;">ના</td>
-            <td style="padding: 10px; border: 1px solid #ddd;">તેઓ યહૂદીઓ દ્વારા સ્વીકૃત જૂના કરારના પુસ્તકોને જ પ્રમાણિત માને છે.</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border: 1px solid #ddd;">કેથોલિક ઓર્થોડોક્સ</td>
-            <td style="padding: 10px; border: 1px solid #ddd;">ના</td>
-            <td style="padding: 10px; border: 1px solid #ddd;">ચોથી સદીની ધર્મસભાઓએ તેને સત્તાવાર યાદીમાં સ્થાન આપ્યું નથી.</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border: 1px solid #ddd;">ઇથોપિયન ઓર્થોડોક્સ</td>
-            <td style="padding: 10px; border: 1px solid #ddd;">હા</td>
-            <td style="padding: 10px; border: 1px solid #ddd;">તેઓની અતિ પ્રાચીન પરંપરા મુજબ તેને હજુ પણ ઈશ્વરપ્રેરિત માને છે.</td>
-          </tr>
-        </tbody>
-      </table>
+      <p>આ કોઈ એક વ્યક્તિ દ્વારા લેવાયેલો નિર્ણય નહોતો, પરંતુ મંડળીના આગેવાનો દ્વારા લેવાયેલ સામૂહિક નિર્ણય હતો. ચોથી સદીમાં મંડળીના આગેવાનોએ જે પુસ્તકોને પવિત્ર આત્માની પ્રેરણાથી લખાયેલા માન્યા, તેની સત્તાવાર યાદી તૈયાર કરી.</p>
     </div>
   `;
+  window.scrollTo(0, 0);
 }
 
 /* =========================
