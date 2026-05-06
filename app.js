@@ -30,8 +30,8 @@ async function loadBook() {
 
   try {
     const [chaptersRes, historyRes] = await Promise.all([
-      fetch("/Book-of-Enoch/data/chapters.json"),
-      fetch("/Book-of-Enoch/data/history.json")
+      fetch("./data/chapters.json"),
+      fetch("./data/history.json")
     ]);
 
     if (!chaptersRes.ok || !historyRes.ok) {
