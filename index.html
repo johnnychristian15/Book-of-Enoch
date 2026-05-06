@@ -1,94 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="gu">
 <head>
   <meta charset="UTF-8">
-  <title>Book of Enoch</title>
+  <title>Book of Enoch · હનોખનું પુસ્તક</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <link rel="stylesheet" href="style.css">
-
-  <!-- GitHub Pages base -->
-  <base href="/Book-of-Enoch/">
 </head>
 
 <body>
 
-<!-- ================= COVER ================= -->
+<!-- ================= COVER PAGE ================= -->
 <div id="cover">
   <div class="cover-wrapper">
-
-    <div class="top-label">
-      પવિત્ર ગ્રંથ · SACRED SCRIPTURE
-    </div>
-
+    <div class="top-label">પવિત્ર ગ્રંથ · SACRED SCRIPTURE</div>
     <h1>The Book of Enoch</h1>
     <h2>હનોખનું પુસ્તક</h2>
-
-    <div class="subtitle">
-      THE BOOK OF THE WATCHERS · જાગ્રત દૂતોનું પુસ્તક
-    </div>
-
+    <div class="subtitle">THE BOOK OF THE WATCHERS · જાગ્રત દૂતોનું પુસ્તક</div>
     <div class="meta">
       ગુજરાતી અનુવાદ · Gujarati Translation<br>
-      અરામિક, હિબ્રૂ અને ગ'એઝ ભાષામાંથી<br><br>
+      મૂળ અરામિક, હિબ્રૂ અને ગ'એઝ ભાષામાંથી<br><br>
       અધ્યાય ૧–૧૫ · Chapters 1–15
-      <h2 style="color:red; font-size:1.1rem;">
-        The book of Enoch has 4 sections and total of 108 chapters. More are coming.
-      </h2>
+      <p class="coming-soon">The book of Enoch has 108 chapters. 15 chapters translated so far — more coming.</p>
     </div>
-
     <div class="author">
-      DESIGNED & PRESENTED BY<br>
+      DESIGNED &amp; IMPLEMENTED BY<br>
       <strong>Johnny Christian</strong><br>
-      May 5, 2026 · Version 1.0
+      Christian.Johnny@gmail.com<br>
+      May 3, 2026 · Version 1.0
     </div>
-
     <div class="disclaimer">
       ⚠ LEGAL DISCLAIMER<br><br>
-      
-This translation is provided for personal, educational, and spiritual reference only. It is an independent scholarly work and does not represent any official religious body or institution. The translator accepts no liability whatsoever for any interpretation, use, or misuse of this text. Readers are encouraged to consult authoritative religious and scholarly sources. This work is shared in good faith with no warranties, express or implied, regarding accuracy or completeness.
+      This translation is provided for personal, educational, and spiritual reference only.
+      It is an independent scholarly work and does not represent any official religious body or
+      institution. The translator accepts no liability whatsoever for any interpretation, use,
+      or misuse of this text. Readers are encouraged to consult authoritative religious and
+      scholarly sources. This work is shared in good faith with no warranties, express or
+      implied, regarding accuracy or completeness.
     </div>
-
-    <button id="enterBtn" onclick="enterBook()">
-      અધ્યાય પસંદ કરો →
-    </button>
-
+    <button id="enterBtn" onclick="enterBook()">અધ્યાય પસંદ કરો →</button>
   </div>
 </div>
 
 <!-- ================= APP ================= -->
 <div id="app" style="display:none;">
 
-  <h1 class="title">The Book of Enoch</h1>
+  <header class="app-header">
+    <h1 class="app-title">The Book of Enoch</h1>
 
-  <!-- SEARCH 
-  <div class="search-container">
-    <input 
-      type="text" 
-      id="searchInput" 
-      placeholder="શોધો (Search...)"
-    >
-    <button class="nav-btn" onclick="executeSearch()">🔍</button>
+    <!-- Chapter selector dropdown -->
+    <div class="nav-bar">
+      <select id="chapterSelect" class="chapter-select" aria-label="Select chapter">
+        <option value="-1">Loading…</option>
+      </select>
+      <span id="progressLabel" class="progress-label"></span>
+    </div>
+
+    <!-- Prev / Next buttons -->
+    <div class="nav-buttons">
+      <button class="nav-btn" id="prevBtn" onclick="prevChapter()" disabled>⬅ Previous</button>
+      <button class="nav-btn" id="nextBtn" onclick="nextChapter()">Next ➡</button>
+    </div>
+  </header>
+
+  <main id="content" class="content"></main>
+
+  <!-- Bottom nav (mirrors top for long chapters on mobile) -->
+  <div class="nav-buttons bottom-nav">
+    <button class="nav-btn" onclick="prevChapter()">⬅ Previous</button>
+    <button class="nav-btn" onclick="nextChapter()">Next ➡</button>
   </div>
--->
-
-  <!-- TABS -->
-  <div id="tabs" class="tabs"></div>
-
-  <!-- SEARCH RESULTS -->
-  <div id="searchResults" class="content" style="display:none;"></div>
-
-  <!-- MAIN CONTENT -->
-  <div id="content" class="content"></div>
 
 </div>
 
-<!-- ENGINE -->
-<script src="./engine/storage.js"></script>
-<script src="./engine/search.js"></script>
-<script src="./engine/reader.js"></script>
-
-<!-- APP -->
 <script src="app.js"></script>
 
 </body>

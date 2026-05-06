@@ -1,177 +1,273 @@
-body {
-  margin: 0;
-  font-family: Georgia, serif;
-  background: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
-  background-color: #f4ecd8;
-  color: #2b1d0e;
+/* ============================================================
+   Book of Enoch — style.css
+   Manuscript palette · Mobile-first · Georgia serif
+============================================================ */
+
+/* ─── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --parchment:    #f4ecd8;
+  --parchment-dk: #e8d9bf;
+  --ink:          #2b1d0e;
+  --ink-mid:      #4a3520;
+  --gold:         #8b5e34;
+  --gold-lt:      #c2a97a;
+  --gold-dk:      #6b4520;
+  --border:       #c2a97a;
+  --verse-bar:    #b08a5b;
+  --white-wash:   rgba(255,248,235,0.85);
+  --radius:       8px;
 }
 
-/* ================= COVER ================= */
+/* ─── BASE ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  background-color: var(--parchment);
+  background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+/* ─── COVER ──────────────────────────────────────────────── */
 #cover {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
 }
 
 .cover-wrapper {
-  max-width: 800px;
+  max-width: 720px;
+  width: 100%;
   text-align: center;
-  padding: 40px;
+  padding: 40px 30px;
+  background: var(--white-wash);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 
 .top-label {
   letter-spacing: 2px;
-  font-size: 14px;
-  margin-bottom: 20px;
-  color: #8b5e34;
+  font-size: 13px;
+  color: var(--gold);
+  margin-bottom: 18px;
+  text-transform: uppercase;
 }
 
-#cover h1 {
-  font-size: 42px;
-  margin: 10px 0;
+#cover h1 { font-size: clamp(28px, 6vw, 44px); margin: 8px 0; }
+#cover h2 { font-size: clamp(20px, 4vw, 30px); margin: 8px 0; font-weight: normal; }
+
+.subtitle  { margin: 18px 0; font-style: italic; color: var(--ink-mid); }
+
+.meta      { margin: 18px 0; font-size: 14px; line-height: 1.7; }
+
+.coming-soon {
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 13px;
+  color: #8b0000;
 }
 
-#cover h2 {
-  font-size: 28px;
-  margin: 10px 0;
-  font-weight: normal;
-}
-
-.subtitle {
-  margin: 20px 0;
-  font-style: italic;
-}
-
-.meta {
-  margin: 20px 0;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.author {
-  margin-top: 25px;
-  font-size: 14px;
-}
+.author    { margin-top: 22px; font-size: 13px; line-height: 1.7; }
 
 .disclaimer {
-  margin-top: 25px;
-  font-size: 12px;
-  padding: 15px;
-  border: 1px solid #c2a97a;
-  background: rgba(255,255,255,0.4);
+  margin-top: 22px;
+  font-size: 11px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.35);
+  border-radius: var(--radius);
+  text-align: left;
+  color: var(--ink-mid);
 }
 
 #enterBtn {
-  margin-top: 30px;
-  padding: 12px 20px;
+  margin-top: 28px;
+  padding: 13px 28px;
   font-size: 16px;
-  border: 1px solid #8b5e34;
-  background: transparent;
+  font-family: Georgia, serif;
+  border: 1px solid var(--gold);
+  background: var(--parchment-dk);
+  color: var(--ink);
+  border-radius: var(--radius);
   cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+#enterBtn:hover {
+  background: var(--gold);
+  color: #fff;
 }
 
-/* ================= APP ================= */
-.title {
-  text-align: center;
-  margin: 15px 0;
-}
-
-/* SEARCH */
-.search-container {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px;
-}
-
-.search-container input {
-  padding: 10px;
-  width: 60%;
-  border-radius: 6px;
-  border: 1px solid #c2a97a;
-  font-family: inherit;
-}
-
-/* ================= TABS (HORIZONTAL SCROLL) ================= */
-.tabs {
-  display: flex;
-  overflow-x: auto;
-  white-space: nowrap;
-  gap: 8px;
-  padding: 10px;
-  background: #f5f5f5;
-  border-bottom: 2px solid #b08a5b;
-
+/* ─── APP HEADER ─────────────────────────────────────────── */
+.app-header {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 100;
+  background: var(--parchment-dk);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 14px 8px;
 }
 
-/* hide scrollbar */
-.tabs::-webkit-scrollbar {
-  display: none;
+.app-title {
+  text-align: center;
+  font-size: clamp(18px, 4vw, 26px);
+  margin: 0 0 8px;
 }
 
-/* TAB */
-.tab {
-  flex: 0 0 auto;
-  padding: 8px 14px;
-  background: #e6d3b3;
-  border-radius: 20px;
+/* ─── CHAPTER SELECT DROPDOWN ────────────────────────────── */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.chapter-select {
+  flex: 1 1 auto;
+  max-width: 480px;
+  padding: 8px 12px;
+  font-family: Georgia, serif;
+  font-size: 15px;
+  background: var(--parchment);
+  border: 1px solid var(--gold-lt);
+  border-radius: var(--radius);
+  color: var(--ink);
   cursor: pointer;
-  border: 1px solid #c2a97a;
-  transition: 0.2s;
+  /* iOS fix */
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b5e34' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+.chapter-select:focus {
+  outline: 2px solid var(--gold);
 }
 
-.tab.active {
-  background: #8b5e34;
-  color: white;
-  border-color: #8b5e34;
+.progress-label {
+  font-size: 13px;
+  color: var(--gold-dk);
+  white-space: nowrap;
+  font-style: italic;
 }
 
-.tab:hover {
-  background: #d9c29a;
+/* ─── NAV BUTTONS ────────────────────────────────────────── */
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
 }
 
-/* ================= CONTENT ================= */
+.nav-btn {
+  flex: 1;
+  padding: 9px 14px;
+  font-family: Georgia, serif;
+  font-size: 14px;
+  background: var(--parchment);
+  border: 1px solid var(--gold-lt);
+  border-radius: var(--radius);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.nav-btn:hover:not(:disabled) {
+  background: var(--gold-lt);
+}
+.nav-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.bottom-nav {
+  padding: 12px 14px 24px;
+}
+
+/* ─── CONTENT AREA ───────────────────────────────────────── */
 .content {
-  margin: 10px;
-  padding: 20px;
-  background: rgba(255, 248, 235, 0.9);
-  border-radius: 10px;
-  min-height: 300px;
-  line-height: 1.8;
-  font-size: 17px;
+  margin: 0 auto;
+  max-width: 760px;
+  padding: 20px 16px 40px;
 }
 
-/* VERSES */
+/* ─── PAGE TITLE ─────────────────────────────────────────── */
+.page-title {
+  text-align: center;
+  font-size: clamp(18px, 4vw, 24px);
+  color: var(--gold-dk);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+  margin-bottom: 22px;
+}
+
+/* ─── VERSES ─────────────────────────────────────────────── */
 .verse {
-  margin-bottom: 14px;
-  padding-left: 10px;
-  border-left: 3px solid #b08a5b;
+  margin-bottom: 16px;
+  padding-left: 14px;
+  border-left: 3px solid var(--verse-bar);
 }
 
 .verse-number {
   font-weight: bold;
-  color: #8b5e34;
+  color: var(--gold);
+  margin-right: 6px;
 }
 
-/* NAV */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 15px;
+/* ─── HISTORY BODY ───────────────────────────────────────── */
+.history-body {
+  background: var(--white-wash);
+  border-radius: var(--radius);
+  padding: 20px;
+  border: 1px solid var(--parchment-dk);
 }
 
-.nav-btn {
-  background: #e6d3b3;
-  border: 1px solid #c2a97a;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
+.history-body h3 {
+  color: var(--gold-dk);
+  margin-top: 24px;
+  font-size: 17px;
+  border-bottom: 1px dashed var(--gold-lt);
+  padding-bottom: 4px;
 }
 
-.nav-btn:hover {
-  background: #d9c29a;
+.history-body p {
+  margin: 12px 0;
+}
+
+/* ─── TABLE ──────────────────────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+th, td {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+thead tr {
+  background: var(--parchment-dk);
+  font-weight: bold;
+  color: var(--gold-dk);
+}
+
+tbody tr:nth-child(even) {
+  background: rgba(255,255,255,0.3);
+}
+
+/* ─── MOBILE TWEAKS ──────────────────────────────────────── */
+@media (max-width: 500px) {
+  .cover-wrapper { padding: 24px 16px; }
+  .content       { padding: 14px 12px 32px; }
+  .chapter-select { font-size: 14px; }
+  table          { font-size: 12px; }
+  th, td         { padding: 7px 8px; }
 }
