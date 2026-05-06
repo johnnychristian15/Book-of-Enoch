@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enoch Editor</title>
+<style>
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Cinzel:wght@500;700&display=swap');
+
+:root {
+  --parchment:   #f4ecd8;
+  --parchment-dk:#e4d5b7;
+  --parchment-md:#ede0c4;
+  --ink:         #2b1d0e;
+  --ink-mid:     #5a3e28;
+  --gold:        #8b5e34;
+  --gold-lt:     #c9a97a;
+  --gold-dk:     #5c3a1e;
+  --crimson:     #7a1e1e;
+  --green:       #2d5a27;
+  --border:      #c2a97a;
+  --shadow:      rgba(43,29,14,0.18);
+  --radius:      10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'EB Garamond', Georgia, serif;
+  background: var(--parchment);
+  background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 16px;
+}
+
+/* ── LOGIN SCREEN ── */
+#loginScreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+.login-card {
+  background: rgba(255,248,235,0.95);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 44px 40px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 8px 32px var(--shadow);
+  text-align: center;
+}
+.login-card .crown { font-size: 42px; margin-bottom: 12px; }
+.login-card h1 {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  color: var(--gold-dk);
+  margin-bottom: 6px;
+}
+.login-card p {
+  font-size: 14px;
+  color: var(--ink-mid);
+  margin-bottom: 28px;
+  font-style: italic;
+}
+.field-group { text-align: left; margin-bottom: 16px; }
+.field-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold-dk);
+  margin-bottom: 6px;
+  letter-spacing: .5px;
+}
+.field-group input, .field-group select {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: 'EB Garamond', serif;
+  font-size: 15px;
+  background: var(--parchment);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .2s;
+}
+.field-group input:focus, .field-group select:focus {
+  border-color: var(--gold);
+}
+.field-group .hint {
+  font-size: 12px;
+  color: var(--ink-mid);
+  margin-top: 4px;
+  font-style: italic;
+}
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: var(--gold-dk);
+  color: var(--parchment);
+  border: none;
+  border-radius: 6px;
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background .2s, transform .1s;
+  margin-top: 8px;
+}
+.btn-primary:hover { background: var(--gold); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+
+/* ── MAIN APP ── */
+#app { display: none; }
+
+.topbar {
+  background: var(--gold-dk);
+  color: var(--parchment);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.topbar h1 {
+  font-family: 'Cinzel', serif;
+  font-size: 17px;
+  letter-spacing: 1px;
+}
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.repo-badge {
+  font-size: 12px;
+  opacity: .8;
+  font-style: italic;
+}
+.btn-sm {
+  padding: 6px 14px;
+  border-radius: 5px;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid rgba(255,248,235,0.4);
+  background: transparent;
+  color: var(--parchment);
+  font-family: 'EB Garamond', serif;
+  transition: background .15s;
+}
+.btn-sm:hover { background: rgba(255,255,255,.15); }
+
+/* ── TABS ── */
+.tab-row {
+  display: flex;
+  gap: 0;
+  background: var(--parchment-dk);
+  border-bottom: 2px solid var(--border);
+  padding: 0 16px;
+}
+.tab-btn {
+  padding: 12px 24px;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  color: var(--ink-mid);
+  transition: color .15s, border-color .15s;
+  margin-bottom: -2px;
+}
+.tab-btn.active {
+  color: var(--gold-dk);
+  border-bottom-color: var(--gold-dk);
+}
+
+/* ── WORKSPACE ── */
+.workspace { display: flex; min-height: calc(100vh - 110px); }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 260px;
+  min-width: 220px;
+  background: var(--parchment-md);
+  border-right: 1px solid var(--border);
+  padding: 16px 0;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+.sidebar-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--gold-dk);
+  padding: 0 16px 10px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.chapter-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background .12s;
+  border-left: 3px solid transparent;
+}
+.chapter-item:hover { background: rgba(139,94,52,.08); }
+.chapter-item.active {
+  background: rgba(139,94,52,.14);
+  border-left-color: var(--gold);
+  color: var(--gold-dk);
+  font-weight: 600;
+}
+.chapter-item .ch-num {
+  font-size: 11px;
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  min-width: 28px;
+}
+.chapter-item .ch-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.chapter-item .ch-count {
+  font-size: 11px;
+  color: var(--ink-mid);
+  background: var(--parchment-dk);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+.add-chapter-btn {
+  display: block;
+  width: calc(100% - 32px);
+  margin: 12px 16px 0;
+  padding: 9px;
+  background: var(--gold-dk);
+  color: var(--parchment);
+  border: none;
+  border-radius: 6px;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.add-chapter-btn:hover { background: var(--gold); }
+
+/* ── EDITOR PANEL ── */
+.editor-panel {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.panel-header h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  color: var(--gold-dk);
+}
+.btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn-action {
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: 'EB Garamond', serif;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--parchment);
+  color: var(--ink);
+  transition: background .15s, transform .1s;
+}
+.btn-action:hover { background: var(--parchment-dk); }
+.btn-action.save {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+.btn-action.save:hover { background: #3a7233; }
+.btn-action.danger {
+  background: var(--crimson);
+  color: #fff;
+  border-color: var(--crimson);
+}
+.btn-action.danger:hover { background: #9a2525; }
+
+/* ── FORM ELEMENTS ── */
+.form-row { margin-bottom: 18px; }
+.form-row label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold-dk);
+  margin-bottom: 6px;
+  letter-spacing: .3px;
+}
+.form-row input[type=text],
+.form-row input[type=number] {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: 'EB Garamond', serif;
+  font-size: 16px;
+  background: rgba(255,248,235,0.9);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .2s;
+}
+.form-row input:focus { border-color: var(--gold); }
+
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: 'EB Garamond', serif;
+  font-size: 16px;
+  line-height: 1.9;
+  background: rgba(255,248,235,0.9);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--ink);
+  outline: none;
+  resize: vertical;
+  transition: border-color .2s;
+}
+textarea:focus { border-color: var(--gold); }
+
+.hint-text {
+  font-size: 12px;
+  color: var(--ink-mid);
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── VERSE INPUT MODE ── */
+.verse-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.verse-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.verse-num-badge {
+  min-width: 36px;
+  padding: 10px 0;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.verse-row textarea { min-height: 70px; }
+.verse-del-btn {
+  padding: 8px 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  color: var(--crimson);
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: background .12s;
+}
+.verse-del-btn:hover { background: #fbeaea; }
+.add-verse-btn {
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px dashed var(--gold);
+  border-radius: 6px;
+  color: var(--gold-dk);
+  font-family: 'EB Garamond', serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .12s;
+}
+.add-verse-btn:hover { background: rgba(139,94,52,.07); }
+
+/* ── MODE TOGGLE ── */
+.mode-toggle {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  width: fit-content;
+}
+.mode-btn {
+  padding: 7px 16px;
+  font-size: 13px;
+  font-family: 'EB Garamond', serif;
+  border: none;
+  background: var(--parchment);
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.mode-btn.active {
+  background: var(--gold-dk);
+  color: var(--parchment);
+}
+
+/* ── STATUS TOAST ── */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--gold-dk);
+  color: var(--parchment);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Cinzel', serif;
+  z-index: 999;
+  transition: transform .3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+#toast.show { transform: translateX(-50%) translateY(0); }
+#toast.error { background: var(--crimson); }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ink-mid);
+}
+.empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+.empty-state p { font-style: italic; font-size: 15px; }
+
+/* ── CONFIRM DIALOG ── */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(43,29,14,0.5);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+}
+.overlay.show { display: flex; }
+.dialog {
+  background: var(--parchment);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 12px 40px var(--shadow);
+}
+.dialog h3 {
+  font-family: 'Cinzel', serif;
+  color: var(--crimson);
+  margin-bottom: 12px;
+}
+.dialog p { font-size: 15px; color: var(--ink-mid); margin-bottom: 22px; }
+.dialog-btns { display: flex; gap: 10px; justify-content: center; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .sidebar { width: 200px; min-width: 180px; }
+  .editor-panel { padding: 16px; }
+  .topbar h1 { font-size: 14px; }
+  .repo-badge { display: none; }
+}
+@media (max-width: 480px) {
+  .workspace { flex-direction: column; }
+  .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); max-height: 200px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="crown">📜</div>
+    <h1>Enoch Book Editor</h1>
+    <p>Connect to your GitHub repository to edit chapters and history</p>
+
+    <div class="field-group">
+      <label>GitHub Personal Access Token</label>
+      <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+      <div class="hint">
+        Needs <strong>repo</strong> scope.
+        <a href="https://github.com/settings/tokens/new?scopes=repo&description=Enoch+Editor" target="_blank" style="color:var(--gold-dk)">Create one here ↗</a>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>Repository (owner/repo)</label>
+      <input type="text" id="repoInput" placeholder="JohnnyChristian/Book-of-Enoch">
+    </div>
+
+    <div class="field-group">
+      <label>Branch</label>
+      <input type="text" id="branchInput" value="main" placeholder="main">
+    </div>
+
+    <div class="field-group">
+      <label>Data folder path</label>
+      <input type="text" id="pathInput" value="data" placeholder="data">
+      <div class="hint">Folder containing chapters.json and history.json</div>
+    </div>
+
+    <button class="btn-primary" onclick="connect()">🔗 Connect &amp; Load</button>
+
+    <p style="font-size:11px; color:var(--ink-mid); margin-top:16px; font-style:italic;">
+      Your token is stored only in this browser session and never sent anywhere except GitHub's API.
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════════════ -->
+<div id="app">
+
+  <div class="topbar">
+    <h1>📖 Enoch Editor</h1>
+    <div class="topbar-right">
+      <span class="repo-badge" id="repoLabel"></span>
+      <button class="btn-sm" onclick="reloadData()">↻ Reload</button>
+      <button class="btn-sm" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" id="tabChapters" onclick="switchTab('chapters')">📚 Chapters</button>
+    <button class="tab-btn" id="tabHistory" onclick="switchTab('history')">📜 History</button>
+  </div>
+
+  <!-- CHAPTERS TAB -->
+  <div id="chaptersTab" class="workspace">
+    <div class="sidebar">
+      <div class="sidebar-title">Chapters</div>
+      <div id="chapterList"></div>
+      <button class="add-chapter-btn" onclick="newChapter()">+ Add Chapter</button>
+    </div>
+    <div class="editor-panel" id="chapterEditor">
+      <div class="empty-state">
+        <div class="icon">✍️</div>
+        <p>Select a chapter to edit, or add a new one</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY TAB -->
+  <div id="historyTab" class="workspace" style="display:none;">
+    <div class="editor-panel" style="max-width:860px; margin:0 auto;">
+      <div class="panel-header">
+        <h2>History Content</h2>
+        <div class="btn-group">
+          <button class="btn-action save" onclick="saveHistory()">💾 Save to GitHub</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Full history text (Gujarati)</label>
+        <textarea id="historyContent" rows="28" placeholder="Enter history text here…"></textarea>
+        <div class="hint-text">This is the complete content of history.json. Edit freely — the file will be saved exactly as written.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Confirm Dialog -->
+<div class="overlay" id="confirmOverlay">
+  <div class="dialog">
+    <h3 id="confirmTitle">Confirm</h3>
+    <p id="confirmMsg"></p>
+    <div class="dialog-btns">
+      <button class="btn-action" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-action danger" id="confirmOkBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════ */
+let TOKEN  = '';
+let REPO   = '';
+let BRANCH = 'main';
+let DATA_PATH = 'data';
+
+let chaptersData = null;   // full parsed chapters.json
+let historyData  = null;   // full parsed history.json
+let chaptersSha  = '';     // GitHub blob SHA for chapters.json
+let historySha   = '';     // GitHub blob SHA for history.json
+
+let currentChapterIdx = null;
+let activeTab = 'chapters';
+
+const GU = '૦૧૨૩૪૫૬૭૮૯';
+
+/* ════════════════════════════════════════════════
+   GUJARATI HELPERS
+════════════════════════════════════════════════ */
+function toGu(n) {
+  return String(n).split('').map(d => GU[+d]).join('');
+}
+
+function normalizeVerse(text, num) {
+  let t = text.trim();
+  // strip any existing numeral prefix the user typed
+  t = t.replace(/^[0-9૦-૯]+\.\s*/, '');
+  return `${toGu(num)}. ${t}`;
+}
+
+function parseVerses(raw) {
+  // Accept bulk text: one verse per line (blank lines ignored)
+  // Each line may or may not start with a numeral prefix
+  const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  return lines.map((line, i) => normalizeVerse(line, i + 1));
+}
+
+/* ════════════════════════════════════════════════
+   GITHUB API
+════════════════════════════════════════════════ */
+async function ghGet(path) {
+  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}?ref=${BRANCH}`, {
+    headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+  });
+  if (!r.ok) throw new Error(`GitHub GET failed: ${r.status} ${await r.text()}`);
+  return r.json();
+}
+
+async function ghPut(path, content, sha, message) {
+  const body = {
+    message,
+    content: btoa(unescape(encodeURIComponent(content))),
+    branch: BRANCH
+  };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `token ${TOKEN}`,
+      Accept: 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error(`GitHub PUT failed: ${r.status} ${await r.text()}`);
+  return r.json();
+}
+
+function ghDecode(b64) {
+  return decodeURIComponent(escape(atob(b64.replace(/\n/g, ''))));
+}
+
+/* ════════════════════════════════════════════════
+   CONNECT / LOAD
+════════════════════════════════════════════════ */
+async function connect() {
+  TOKEN     = document.getElementById('tokenInput').value.trim();
+  REPO      = document.getElementById('repoInput').value.trim();
+  BRANCH    = document.getElementById('branchInput').value.trim() || 'main';
+  DATA_PATH = document.getElementById('pathInput').value.trim().replace(/\/$/, '') || 'data';
+
+  if (!TOKEN || !REPO) { toast('Please fill in token and repository', true); return; }
+
+  toast('Connecting to GitHub…');
+  try {
+    await reloadData(true);
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('repoLabel').textContent = REPO + ' / ' + BRANCH;
+    // persist settings (not token) for convenience
+    sessionStorage.setItem('enochRepo',   REPO);
+    sessionStorage.setItem('enochBranch', BRANCH);
+    sessionStorage.setItem('enochPath',   DATA_PATH);
+  } catch(e) {
+    toast('Connection failed: ' + e.message, true);
+  }
+}
+
+async function reloadData(silent = false) {
+  if (!silent) toast('Reloading from GitHub…');
+  const [chFile, hiFile] = await Promise.all([
+    ghGet(`${DATA_PATH}/chapters.json`),
+    ghGet(`${DATA_PATH}/history.json`)
+  ]);
+  chaptersData = JSON.parse(ghDecode(chFile.content));
+  historyData  = JSON.parse(ghDecode(hiFile.content));
+  chaptersSha  = chFile.sha;
+  historySha   = hiFile.sha;
+
+  renderChapterList();
+  document.getElementById('historyContent').value = historyData.content || '';
+  currentChapterIdx = null;
+  renderEmptyState();
+  if (!silent) toast('Reloaded ✓');
+}
+
+function logout() {
+  TOKEN = ''; REPO = ''; chaptersData = null; historyData = null;
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+/* ════════════════════════════════════════════════
+   TAB SWITCHING
+════════════════════════════════════════════════ */
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('chaptersTab').style.display = tab === 'chapters' ? 'flex' : 'none';
+  document.getElementById('historyTab').style.display  = tab === 'history'  ? 'flex' : 'none';
+  document.getElementById('tabChapters').classList.toggle('active', tab === 'chapters');
+  document.getElementById('tabHistory').classList.toggle('active',  tab === 'history');
+}
+
+/* ════════════════════════════════════════════════
+   CHAPTER LIST
+════════════════════════════════════════════════ */
+function renderChapterList() {
+  const list = document.getElementById('chapterList');
+  list.innerHTML = '';
+  (chaptersData.chapters || []).forEach((ch, i) => {
+    const div = document.createElement('div');
+    div.className = 'chapter-item' + (i === currentChapterIdx ? ' active' : '');
+    div.innerHTML = `
+      <span class="ch-num">${ch.n}</span>
+      <span class="ch-title">${ch.title}</span>
+      <span class="ch-count">${ch.verses.length}v</span>
+    `;
+    div.onclick = () => openChapter(i);
+    list.appendChild(div);
+  });
+}
+
+/* ════════════════════════════════════════════════
+   CHAPTER EDITOR
+════════════════════════════════════════════════ */
+function renderEmptyState() {
+  document.getElementById('chapterEditor').innerHTML = `
+    <div class="empty-state">
+      <div class="icon">✍️</div>
+      <p>Select a chapter to edit, or add a new one</p>
+    </div>`;
+}
+
+function openChapter(idx) {
+  currentChapterIdx = idx;
+  renderChapterList();
+  renderChapterEditor();
+}
+
+function renderChapterEditor() {
+  const ch  = chaptersData.chapters[currentChapterIdx];
+  const panel = document.getElementById('chapterEditor');
+
+  panel.innerHTML = `
+    <div class="panel-header">
+      <h2>Chapter ${ch.n}</h2>
+      <div class="btn-group">
+        <button class="btn-action save" onclick="saveChapters('Updated chapter ${ch.n}')">💾 Save to GitHub</button>
+        <button class="btn-action danger" onclick="askDeleteChapter(${currentChapterIdx})">🗑 Delete Chapter</button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Chapter Number</label>
+      <input type="number" id="chNum" value="${ch.n}" min="1">
+    </div>
+    <div class="form-row">
+      <label>Chapter Title (Gujarati)</label>
+      <input type="text" id="chTitle" value="${escHtml(ch.title)}">
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:13px; font-weight:600; color:var(--gold-dk); margin-bottom:8px;">Verses</div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="modeBtnIndiv" onclick="setVerseMode('individual')">One by One</button>
+        <button class="mode-btn" id="modeBtnBulk"  onclick="setVerseMode('bulk')">Paste All at Once</button>
+      </div>
+
+      <!-- INDIVIDUAL MODE -->
+      <div id="modeIndividual">
+        <div class="verse-list" id="verseList"></div>
+        <button class="add-verse-btn" onclick="addVerseRow()">+ Add Verse</button>
+      </div>
+
+      <!-- BULK MODE -->
+      <div id="modeBulk" style="display:none;">
+        <textarea id="bulkVerses" rows="18"
+          placeholder="Paste all verses here, one per line.\n\nYou can include or omit the Gujarati numeral prefix — the editor will fix them automatically.\n\nExample:\nઆ હનોખના આશીર્વાદના વચનો છે\nહનોખ, જે એક ન્યાયી પુરુષ હતો…"></textarea>
+        <div class="hint-text">One verse per line. Blank lines are ignored. Prefixes like ૧. ૨. are auto-applied.</div>
+      </div>
+    </div>
+  `;
+
+  renderVerseRows(ch.verses);
+}
+
+function renderVerseRows(verses) {
+  const list = document.getElementById('verseList');
+  list.innerHTML = '';
+  verses.forEach((v, i) => {
+    // strip leading numeral for display in textarea
+    const text = v.replace(/^[0-9૦-૯]+\.\s*/, '');
+    addVerseRow(text, i);
+  });
+}
+
+function addVerseRow(text = '', insertAt = null) {
+  const list  = document.getElementById('verseList');
+  const idx   = insertAt !== null ? insertAt : list.children.length;
+  const num   = idx + 1;
+  const row   = document.createElement('div');
+  row.className = 'verse-row';
+  row.dataset.idx = idx;
+  row.innerHTML = `
+    <div class="verse-num-badge">${toGu(num)}</div>
+    <textarea rows="2">${escHtml(text)}</textarea>
+    <button class="verse-del-btn" onclick="removeVerseRow(this)" title="Delete verse">✕</button>
+  `;
+  list.appendChild(row);
+  renumberVerseRows();
+}
+
+function removeVerseRow(btn) {
+  btn.closest('.verse-row').remove();
+  renumberVerseRows();
+}
+
+function renumberVerseRows() {
+  document.querySelectorAll('#verseList .verse-row').forEach((row, i) => {
+    row.querySelector('.verse-num-badge').textContent = toGu(i + 1);
+  });
+}
+
+let verseMode = 'individual';
+function setVerseMode(mode) {
+  verseMode = mode;
+  document.getElementById('modeIndividual').style.display = mode === 'individual' ? 'block' : 'none';
+  document.getElementById('modeBulk').style.display       = mode === 'bulk'       ? 'block' : 'none';
+  document.getElementById('modeBtnIndiv').classList.toggle('active', mode === 'individual');
+  document.getElementById('modeBtnBulk').classList.toggle('active',  mode === 'bulk');
+
+  if (mode === 'bulk') {
+    // Populate bulk textarea from current verse rows
+    const rows = document.querySelectorAll('#verseList .verse-row textarea');
+    document.getElementById('bulkVerses').value = Array.from(rows).map(r => r.value).join('\n');
+  } else {
+    // Sync individual rows from bulk textarea
+    const raw = document.getElementById('bulkVerses').value;
+    const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+    const list = document.getElementById('verseList');
+    list.innerHTML = '';
+    lines.forEach((line, i) => {
+      const text = line.replace(/^[0-9૦-૯]+\.\s*/, '');
+      addVerseRow(text, i);
+    });
+  }
+}
+
+function collectVerses() {
+  if (verseMode === 'bulk') {
+    return parseVerses(document.getElementById('bulkVerses').value);
+  } else {
+    const rows = document.querySelectorAll('#verseList .verse-row textarea');
+    return Array.from(rows).map((r, i) => normalizeVerse(r.value, i + 1)).filter(v => v.replace(/^[^.]+\.\s*/, '').trim());
+  }
+}
+
+/* ════════════════════════════════════════════════
+   NEW CHAPTER
+════════════════════════════════════════════════ */
+function newChapter() {
+  const nextN = chaptersData.chapters.length
+    ? Math.max(...chaptersData.chapters.map(c => c.n)) + 1
+    : 1;
+
+  // Insert placeholder
+  const newCh = { n: nextN, title: '', verses: [] };
+  chaptersData.chapters.push(newCh);
+  currentChapterIdx = chaptersData.chapters.length - 1;
+  renderChapterList();
+
+  const panel = document.getElementById('chapterEditor');
+  panel.innerHTML = `
+    <div class="panel-header">
+      <h2>New Chapter</h2>
+      <div class="btn-group">
+        <button class="btn-action save" onclick="saveNewChapter()">💾 Save to GitHub</button>
+        <button class="btn-action" onclick="cancelNewChapter()">✕ Cancel</button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Chapter Number</label>
+      <input type="number" id="chNum" value="${nextN}" min="1">
+    </div>
+    <div class="form-row">
+      <label>Chapter Title (Gujarati)</label>
+      <input type="text" id="chTitle" placeholder="અધ્યાયનું શીર્ષક">
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:13px; font-weight:600; color:var(--gold-dk); margin-bottom:8px;">Verses</div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="modeBtnIndiv" onclick="setVerseMode('individual')">One by One</button>
+        <button class="mode-btn" id="modeBtnBulk"  onclick="setVerseMode('bulk')">Paste All at Once</button>
+      </div>
+      <div id="modeIndividual">
+        <div class="verse-list" id="verseList"></div>
+        <button class="add-verse-btn" onclick="addVerseRow()">+ Add Verse</button>
+      </div>
+      <div id="modeBulk" style="display:none;">
+        <textarea id="bulkVerses" rows="18"
+          placeholder="Paste all verses here, one per line."></textarea>
+        <div class="hint-text">One verse per line. Blank lines ignored. Numeral prefixes auto-applied.</div>
+      </div>
+    </div>
+  `;
+  verseMode = 'individual';
+  addVerseRow('', 0);
+}
+
+function cancelNewChapter() {
+  chaptersData.chapters.pop();
+  currentChapterIdx = null;
+  renderChapterList();
+  renderEmptyState();
+}
+
+async function saveNewChapter() {
+  const n     = parseInt(document.getElementById('chNum').value);
+  const title = document.getElementById('chTitle').value.trim();
+  const verses = collectVerses();
+
+  if (!title)         { toast('Title is required', true); return; }
+  if (!verses.length) { toast('At least one verse required', true); return; }
+
+  // Check duplicate number
+  const dup = chaptersData.chapters.filter((c, i) => c.n === n && i !== currentChapterIdx);
+  if (dup.length) { toast(`Chapter ${n} already exists`, true); return; }
+
+  chaptersData.chapters[currentChapterIdx] = { n, title, verses };
+  chaptersData.chapters.sort((a, b) => a.n - b.n);
+  currentChapterIdx = chaptersData.chapters.findIndex(c => c.n === n);
+
+  await saveChapters(`Add chapter ${n}: ${title}`);
+}
+
+/* ════════════════════════════════════════════════
+   SAVE CHAPTER EDITS
+════════════════════════════════════════════════ */
+async function saveChapters(commitMsg) {
+  // Collect edits if editing existing chapter
+  if (document.getElementById('chNum')) {
+    const n      = parseInt(document.getElementById('chNum').value);
+    const title  = document.getElementById('chTitle').value.trim();
+    const verses = collectVerses();
+    if (!title)  { toast('Title is required', true); return; }
+    chaptersData.chapters[currentChapterIdx] = { n, title, verses };
+    chaptersData.chapters.sort((a, b) => a.n - b.n);
+    currentChapterIdx = chaptersData.chapters.findIndex(c => c.n === n);
+  }
+
+  try {
+    toast('Saving to GitHub…');
+    const json = JSON.stringify(chaptersData, null, 2);
+    const result = await ghPut(`${DATA_PATH}/chapters.json`, json, chaptersSha,
+      commitMsg || `Update chapters.json`);
+    chaptersSha = result.content.sha;
+    renderChapterList();
+    renderChapterEditor();
+    toast('✅ Saved to GitHub!');
+  } catch(e) {
+    toast('Save failed: ' + e.message, true);
+  }
+}
+
+/* ════════════════════════════════════════════════
+   DELETE CHAPTER
+════════════════════════════════════════════════ */
+let pendingDeleteIdx = null;
+function askDeleteChapter(idx) {
+  pendingDeleteIdx = idx;
+  const ch = chaptersData.chapters[idx];
+  document.getElementById('confirmTitle').textContent = 'Delete Chapter?';
+  document.getElementById('confirmMsg').textContent =
+    `Delete Chapter ${ch.n} — "${ch.title}" with ${ch.verses.length} verse(s)? This cannot be undone.`;
+  document.getElementById('confirmOkBtn').onclick = confirmDeleteChapter;
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('show');
+  pendingDeleteIdx = null;
+}
+async function confirmDeleteChapter() {
+  closeConfirm();
+  const ch = chaptersData.chapters[pendingDeleteIdx];
+  chaptersData.chapters.splice(pendingDeleteIdx, 1);
+  currentChapterIdx = null;
+  try {
+    toast('Deleting…');
+    const json = JSON.stringify(chaptersData, null, 2);
+    const result = await ghPut(`${DATA_PATH}/chapters.json`, json, chaptersSha,
+      `Delete chapter ${ch.n}: ${ch.title}`);
+    chaptersSha = result.content.sha;
+    renderChapterList();
+    renderEmptyState();
+    toast(`✅ Chapter ${ch.n} deleted`);
+  } catch(e) {
+    toast('Delete failed: ' + e.message, true);
+  }
+}
+
+/* ════════════════════════════════════════════════
+   SAVE HISTORY
+════════════════════════════════════════════════ */
+async function saveHistory() {
+  const content = document.getElementById('historyContent').value;
+  historyData.content = content;
+  try {
+    toast('Saving history to GitHub…');
+    const json = JSON.stringify(historyData, null, 2);
+    const result = await ghPut(`${DATA_PATH}/history.json`, json, historySha,
+      'Update history.json');
+    historySha = result.content.sha;
+    toast('✅ History saved to GitHub!');
+  } catch(e) {
+    toast('Save failed: ' + e.message, true);
+  }
+}
+
+/* ════════════════════════════════════════════════
+   TOAST
+════════════════════════════════════════════════ */
+let toastTimer;
+function toast(msg, isError = false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show' + (isError ? ' error' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = ''; }, isError ? 4000 : 2500);
+}
+
+/* ════════════════════════════════════════════════
+   UTIL
+════════════════════════════════════════════════ */
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Restore session settings
+(function() {
+  if (sessionStorage.getItem('enochRepo')) {
+    document.getElementById('repoInput').value   = sessionStorage.getItem('enochRepo');
+    document.getElementById('branchInput').value = sessionStorage.getItem('enochBranch') || 'main';
+    document.getElementById('pathInput').value   = sessionStorage.getItem('enochPath') || 'data';
+  }
+})();
+</script>
+</body>
+</html>
