@@ -12,7 +12,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f4ecd8;
 }
 
 .cover-wrapper {
@@ -34,7 +33,7 @@ body {
 }
 
 #cover h2 {
-  font-size: 30px;
+  font-size: 28px;
   margin: 10px 0;
   font-weight: normal;
 }
@@ -78,33 +77,68 @@ body {
   margin: 15px 0;
 }
 
-/* TABS */
-.tabs {
+/* SEARCH */
+.search-container {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   padding: 10px;
 }
 
+.search-container input {
+  padding: 10px;
+  width: 60%;
+  border-radius: 6px;
+  border: 1px solid #c2a97a;
+  font-family: inherit;
+}
+
+/* ================= TABS (HORIZONTAL SCROLL) ================= */
+.tabs {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  gap: 8px;
+  padding: 10px;
+  background: #f5f5f5;
+  border-bottom: 2px solid #b08a5b;
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* hide scrollbar */
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* TAB */
 .tab {
-  padding: 8px 12px;
+  flex: 0 0 auto;
+  padding: 8px 14px;
   background: #e6d3b3;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
   border: 1px solid #c2a97a;
+  transition: 0.2s;
 }
 
 .tab.active {
-  background: #c9a66b;
+  background: #8b5e34;
   color: white;
+  border-color: #8b5e34;
 }
 
-/* CONTENT */
+.tab:hover {
+  background: #d9c29a;
+}
+
+/* ================= CONTENT ================= */
 .content {
   margin: 10px;
   padding: 20px;
-  background: rgba(255, 248, 235, 0.85);
+  background: rgba(255, 248, 235, 0.9);
   border-radius: 10px;
   min-height: 300px;
   line-height: 1.8;
@@ -114,7 +148,7 @@ body {
 /* VERSES */
 .verse {
   margin-bottom: 14px;
-  padding-left: 8px;
+  padding-left: 10px;
   border-left: 3px solid #b08a5b;
 }
 
@@ -136,4 +170,8 @@ body {
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.nav-btn:hover {
+  background: #d9c29a;
 }

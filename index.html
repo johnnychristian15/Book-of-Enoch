@@ -7,15 +7,14 @@
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- GitHub Pages base fix -->
+  <!-- GitHub Pages base -->
   <base href="/Book-of-Enoch/">
 </head>
 
 <body>
 
-<!-- ================= COVER PAGE ================= -->
+<!-- ================= COVER ================= -->
 <div id="cover">
-
   <div class="cover-wrapper">
 
     <div class="top-label">
@@ -33,7 +32,9 @@
       ગુજરાતી અનુવાદ · Gujarati Translation<br>
       મૂલ અરામિક, હિબ્રૂ અને ગ'એઝ ભાષામાંથી<br><br>
       અધ્યાય ૧–૧૫ · Chapters 1–15
-      <h2 style="text-align: center; font-weight: bold; font-size: 1.2rem; color: red;">The book of Enoch has 108 chapters, I have translated 15 chapters for now. More are coming.</h2>
+      <h2 style="color:red; font-size:1.1rem;">
+        The book of Enoch has 108 chapters. More are coming.
+      </h2>
     </div>
 
     <div class="author">
@@ -45,7 +46,8 @@
 
     <div class="disclaimer">
       ⚠ LEGAL DISCLAIMER<br><br>
-      This translation is provided for personal, educational, and spiritual reference only. It is an independent scholarly work and does not represent any official religious body or institution. The translator accepts no liability whatsoever for any interpretation, use, or misuse of this text. Readers are encouraged to consult authoritative religious and scholarly sources. This work is shared in good faith with no warranties, express or implied, regarding accuracy or completeness.
+      
+This translation is provided for personal, educational, and spiritual reference only. It is an independent scholarly work and does not represent any official religious body or institution. The translator accepts no liability whatsoever for any interpretation, use, or misuse of this text. Readers are encouraged to consult authoritative religious and scholarly sources. This work is shared in good faith with no warranties, express or implied, regarding accuracy or completeness.
     </div>
 
     <button id="enterBtn" onclick="enterBook()">
@@ -53,7 +55,6 @@
     </button>
 
   </div>
-
 </div>
 
 <!-- ================= APP ================= -->
@@ -61,31 +62,24 @@
 
   <h1 class="title">The Book of Enoch</h1>
 
-  <!-- SEARCH BAR AREA 
-  <div class="search-container" style="text-align: center; padding: 10px;">
-    <input type="text" id="searchInput" placeholder="શોધો (Search chapters or verses...)" 
-           style="padding: 10px; width: 60%; border-radius: 5px; border: 1px solid #c2a97a; font-family: inherit;">
-    <button class="nav-btn" onclick="executeSearch()">🔍 Search</button>
+  <!-- SEARCH -->
+  <div class="search-container">
+    <input 
+      type="text" 
+      id="searchInput" 
+      placeholder="શોધો (Search...)"
+    >
+    <button class="nav-btn" onclick="executeSearch()">🔍</button>
   </div>
 
+  <!-- TABS -->
   <div id="tabs" class="tabs"></div>
 
-  -- SEARCH RESULTS CONTAINER -->
-  <div id="searchResults" class="content" style="display:none; border: 2px solid #b08a5b; margin-bottom: 20px;"></div>
+  <!-- SEARCH RESULTS -->
+  <div id="searchResults" class="content" style="display:none;"></div>
 
+  <!-- MAIN CONTENT -->
   <div id="content" class="content"></div>
-
-  <!-- CONTACT FORM SECTION
-  <div id="contact-section" class="content" style="margin-top: 30px; border-top: 3px solid #b08a5b;">
-    <h3 style="text-align: center;">સંપર્ક અને ટિપ્પણીઓ (Contact & Comments)</h3>
-    <form action="https://formspree.io/f/xzdorroa" method="POST" style="max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px;">
-      <input type="text" name="name" placeholder="તમારું નામ (Your Name)" required style="padding: 10px; border: 1px solid #c2a97a; border-radius: 4px;">
-      <input type="email" name="email" placeholder="તમારું ઈમેઈલ (Your Email)" required style="padding: 10px; border: 1px solid #c2a97a; border-radius: 4px;">
-      <textarea name="message" placeholder="તમારી ટિપ્પણી (Your Comment)" required style="padding: 10px; border: 1px solid #c2a97a; border-radius: 4px; height: 100px; font-family: inherit;"></textarea>
-      <button type="submit" class="nav-btn" style="width: 100%; font-weight: bold;">Send Message</button>
-    </form>
-  </div>
--->
 
 </div>
 
