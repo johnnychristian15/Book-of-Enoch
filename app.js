@@ -1,4 +1,5 @@
 let chaptersData = [];
+let historyData = null;
 let currentIndex = 0;
 
 /* =========================
@@ -9,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* =========================
-   COVER FLOW (BUTTON ONLY)
+   COVER FLOW
 ========================= */
 function enterBook() {
   const cover = document.getElementById("cover");
@@ -22,25 +23,30 @@ function enterBook() {
 }
 
 /* =========================
-   LOAD DATA (GITHUB SAFE)
+   LOAD DATA (BOTH FILES)
 ========================= */
 async function loadBook() {
   const content = document.getElementById("content");
 
   try {
-    const res = await fetch("/Book-of-Enoch/data/chapters.json");
+    const [chaptersRes, historyRes] = await Promise.all([
+      fetch("/Book-of-Enoch/data/chapters.json"),
+      fetch("/Book-of-Enoch/data/history.json")
+    ]);
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch JSON");
+    if (!chaptersRes.ok || !historyRes.ok) {
+      throw new Error("Failed to fetch JSON files");
     }
 
-    const data = await res.json();
+    const chaptersJson = await chaptersRes.json();
+    const historyJson = await historyRes.json();
 
-    if (!data || !Array.isArray(data.chapters)) {
-      throw new Error("Invalid JSON structure");
+    if (!chaptersJson?.chapters || !Array.isArray(chaptersJson.chapters)) {
+      throw new Error("Invalid chapters.json structure");
     }
 
-    chaptersData = data.chapters;
+    chaptersData = chaptersJson.chapters;
+    historyData = historyJson;
 
     initUI();
     showHistory();
@@ -50,8 +56,6 @@ async function loadBook() {
 
     if (content) {
       content.innerHTML = "❌ Failed to load book: " + err.message;
-    } else {
-      console.error("Missing #content element in HTML");
     }
   }
 }
@@ -97,56 +101,35 @@ function initUI() {
 }
 
 /* =========================
-   SEARCH LOGIC
+   HISTORY PAGE (NOW DYNAMIC)
 ========================= */
-function executeSearch() {
-  const queryEl = document.getElementById("searchInput");
+function showHistory() {
+  const content = document.getElementById("content");
   const resultsDiv = document.getElementById("searchResults");
-  const contentDiv = document.getElementById("content");
 
-  if (!queryEl || !resultsDiv || !contentDiv) return;
+  if (!content || !resultsDiv) return;
 
-  const query = queryEl.value.toLowerCase().trim();
+  resultsDiv.style.display = "none";
+  content.style.display = "block";
+  highlightTab(0);
 
-  if (!query) {
-    resultsDiv.style.display = "none";
-    contentDiv.style.display = "block";
+  if (!historyData) {
+    content.innerHTML = "<p>History not available.</p>";
     return;
   }
 
-  let matches = [];
+  content.innerHTML = `<h2 style="text-align:center;">${historyData.title}</h2>`;
 
-  chaptersData.forEach((chapter, index) => {
-    if (chapter.title.toLowerCase().includes(query)) {
-      matches.push(`
-        <div style="margin-bottom:15px; padding:10px; background:rgba(176,138,91,0.1); border-radius:5px; cursor:pointer;" onclick="renderChapter(${index})">
-          <strong style="color:#8b5e34;">અધ્યાય ${chapter.n}: ${chapter.title}</strong>
-          <p style="font-size:0.9em; margin:2px 0;">(Title match)</p>
-        </div>
-      `);
-    }
+  (historyData.sections || []).forEach(section => {
+    const div = document.createElement("div");
 
-    chapter.verses.forEach(verse => {
-      if (verse.toLowerCase().includes(query)) {
-        matches.push(`
-          <div style="margin-bottom:15px; padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="renderChapter(${index})">
-            <strong style="color:#8b5e34;">અધ્યાય ${chapter.n} Reference:</strong>
-            <p style="font-size:0.95em; margin:5px 0;">"...${verse}..."</p>
-          </div>
-        `);
-      }
-    });
+    div.innerHTML = `
+      <h3>${section.heading}</h3>
+      <p>${section.text}</p>
+    `;
+
+    content.appendChild(div);
   });
-
-  contentDiv.style.display = "none";
-  resultsDiv.style.display = "block";
-  highlightTab(-1);
-
-  if (matches.length > 0) {
-    resultsDiv.innerHTML = `<h3 style="text-align:center;">"${query}" માટેના પરિણામો</h3>` + matches.join("");
-  } else {
-    resultsDiv.innerHTML = `<h3 style="text-align:center;">"${query}"</h3><p style="text-align:center;">કોઈ સંદર્ભ મળ્યો નથી.</p>`;
-  }
 
   window.scrollTo(0, 0);
 }
@@ -191,24 +174,6 @@ function renderChapter(index) {
 
     content.appendChild(div);
   });
-
-  window.scrollTo(0, 0);
-}
-
-/* =========================
-   HISTORY PAGE
-========================= */
-function showHistory() {
-  const content = document.getElementById("content");
-  const resultsDiv = document.getElementById("searchResults");
-
-  if (!content || !resultsDiv) return;
-
-  resultsDiv.style.display = "none";
-  content.style.display = "block";
-  highlightTab(0);
-
-  content.innerHTML = `<h2 style="text-align:center;">હનોખના પુસ્તકનો ઇતિહાસ</h2>`;
 
   window.scrollTo(0, 0);
 }
