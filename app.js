@@ -118,18 +118,16 @@ function showHistory() {
     return;
   }
 
-  content.innerHTML = `<h2 style="text-align:center;">${historyData.title}</h2>`;
+  // Convert line breaks into HTML
+  const formattedText = historyData.content
+    .replace(/\n/g, "<br><br>");
 
-  (historyData.sections || []).forEach(section => {
-    const div = document.createElement("div");
-
-    div.innerHTML = `
-      <h3>${section.heading}</h3>
-      <p>${section.text}</p>
-    `;
-
-    content.appendChild(div);
-  });
+  content.innerHTML = `
+    <h2 style="text-align:center;">${historyData.title}</h2>
+    <div style="line-height:1.6; font-size:1.05em;">
+      ${formattedText}
+    </div>
+  `;
 
   window.scrollTo(0, 0);
 }
