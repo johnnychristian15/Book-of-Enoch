@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Enoch Editor</title>
 <style>
-/* ── Google Fonts ── */
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Cinzel:wght@500;700&display=swap');
 
 :root {
@@ -23,517 +22,184 @@
   --shadow:      rgba(43,29,14,0.18);
   --radius:      10px;
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'EB Garamond',Georgia,serif;background:var(--parchment);background-image:url("https://www.transparenttextures.com/patterns/paper-fibers.png");color:var(--ink);min-height:100vh;font-size:16px;}
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── LOGIN ── */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.login-card{background:rgba(255,248,235,0.96);border:1px solid var(--border);border-radius:var(--radius);padding:44px 40px;max-width:480px;width:100%;box-shadow:0 8px 32px var(--shadow);text-align:center;}
+.login-card .crown{font-size:42px;margin-bottom:12px;}
+.login-card h1{font-family:'Cinzel',serif;font-size:22px;color:var(--gold-dk);margin-bottom:6px;}
+.login-card>p{font-size:14px;color:var(--ink-mid);margin-bottom:28px;font-style:italic;}
+.field-group{text-align:left;margin-bottom:16px;}
+.field-group label{display:block;font-size:13px;font-weight:600;color:var(--gold-dk);margin-bottom:6px;letter-spacing:.5px;}
+.field-group input{width:100%;padding:10px 14px;font-family:'EB Garamond',serif;font-size:15px;background:var(--parchment);border:1px solid var(--border);border-radius:6px;color:var(--ink);outline:none;transition:border-color .2s;}
+.field-group input:focus{border-color:var(--gold);}
+.field-group .hint{font-size:12px;color:var(--ink-mid);margin-top:4px;font-style:italic;}
+.btn-primary{width:100%;padding:12px;background:var(--gold-dk);color:var(--parchment);border:none;border-radius:6px;font-family:'Cinzel',serif;font-size:15px;cursor:pointer;transition:background .2s,transform .1s;margin-top:8px;}
+.btn-primary:hover{background:var(--gold);transform:translateY(-1px);}
 
-body {
-  font-family: 'EB Garamond', Georgia, serif;
-  background: var(--parchment);
-  background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
-  color: var(--ink);
-  min-height: 100vh;
-  font-size: 16px;
-}
-
-/* ── LOGIN SCREEN ── */
-#loginScreen {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 20px;
-}
-.login-card {
-  background: rgba(255,248,235,0.95);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 44px 40px;
-  max-width: 480px;
-  width: 100%;
-  box-shadow: 0 8px 32px var(--shadow);
-  text-align: center;
-}
-.login-card .crown { font-size: 42px; margin-bottom: 12px; }
-.login-card h1 {
-  font-family: 'Cinzel', serif;
-  font-size: 22px;
-  color: var(--gold-dk);
-  margin-bottom: 6px;
-}
-.login-card p {
-  font-size: 14px;
-  color: var(--ink-mid);
-  margin-bottom: 28px;
-  font-style: italic;
-}
-.field-group { text-align: left; margin-bottom: 16px; }
-.field-group label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--gold-dk);
-  margin-bottom: 6px;
-  letter-spacing: .5px;
-}
-.field-group input, .field-group select {
-  width: 100%;
-  padding: 10px 14px;
-  font-family: 'EB Garamond', serif;
-  font-size: 15px;
-  background: var(--parchment);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--ink);
-  outline: none;
-  transition: border-color .2s;
-}
-.field-group input:focus, .field-group select:focus {
-  border-color: var(--gold);
-}
-.field-group .hint {
-  font-size: 12px;
-  color: var(--ink-mid);
-  margin-top: 4px;
-  font-style: italic;
-}
-.btn-primary {
-  width: 100%;
-  padding: 12px;
-  background: var(--gold-dk);
-  color: var(--parchment);
-  border: none;
-  border-radius: 6px;
-  font-family: 'Cinzel', serif;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background .2s, transform .1s;
-  margin-top: 8px;
-}
-.btn-primary:hover { background: var(--gold); transform: translateY(-1px); }
-.btn-primary:active { transform: translateY(0); }
-
-/* ── MAIN APP ── */
-#app { display: none; }
-
-.topbar {
-  background: var(--gold-dk);
-  color: var(--parchment);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 20px;
-  position: sticky;
-  top: 0;
-  z-index: 200;
-  box-shadow: 0 2px 8px var(--shadow);
-}
-.topbar h1 {
-  font-family: 'Cinzel', serif;
-  font-size: 17px;
-  letter-spacing: 1px;
-}
-.topbar-right { display: flex; align-items: center; gap: 10px; }
-.repo-badge {
-  font-size: 12px;
-  opacity: .8;
-  font-style: italic;
-}
-.btn-sm {
-  padding: 6px 14px;
-  border-radius: 5px;
-  font-size: 13px;
-  cursor: pointer;
-  border: 1px solid rgba(255,248,235,0.4);
-  background: transparent;
-  color: var(--parchment);
-  font-family: 'EB Garamond', serif;
-  transition: background .15s;
-}
-.btn-sm:hover { background: rgba(255,255,255,.15); }
+/* ── TOP BAR ── */
+#app{display:none;}
+.topbar{background:var(--gold-dk);color:var(--parchment);display:flex;align-items:center;justify-content:space-between;padding:12px 20px;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px var(--shadow);}
+.topbar h1{font-family:'Cinzel',serif;font-size:17px;letter-spacing:1px;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.repo-badge{font-size:12px;opacity:.8;font-style:italic;}
+.btn-sm{padding:6px 14px;border-radius:5px;font-size:13px;cursor:pointer;border:1px solid rgba(255,248,235,0.4);background:transparent;color:var(--parchment);font-family:'EB Garamond',serif;transition:background .15s;}
+.btn-sm:hover{background:rgba(255,255,255,.15);}
 
 /* ── TABS ── */
-.tab-row {
-  display: flex;
-  gap: 0;
-  background: var(--parchment-dk);
-  border-bottom: 2px solid var(--border);
-  padding: 0 16px;
-}
-.tab-btn {
-  padding: 12px 24px;
-  font-family: 'Cinzel', serif;
-  font-size: 14px;
-  background: transparent;
-  border: none;
-  border-bottom: 3px solid transparent;
-  cursor: pointer;
-  color: var(--ink-mid);
-  transition: color .15s, border-color .15s;
-  margin-bottom: -2px;
-}
-.tab-btn.active {
-  color: var(--gold-dk);
-  border-bottom-color: var(--gold-dk);
-}
+.tab-row{display:flex;background:var(--parchment-dk);border-bottom:2px solid var(--border);padding:0 16px;}
+.tab-btn{padding:12px 24px;font-family:'Cinzel',serif;font-size:14px;background:transparent;border:none;border-bottom:3px solid transparent;cursor:pointer;color:var(--ink-mid);transition:color .15s,border-color .15s;margin-bottom:-2px;}
+.tab-btn.active{color:var(--gold-dk);border-bottom-color:var(--gold-dk);}
 
 /* ── WORKSPACE ── */
-.workspace { display: flex; min-height: calc(100vh - 110px); }
+.workspace{display:flex;min-height:calc(100vh - 110px);}
 
 /* ── SIDEBAR ── */
-.sidebar {
-  width: 260px;
-  min-width: 220px;
-  background: var(--parchment-md);
-  border-right: 1px solid var(--border);
-  padding: 16px 0;
-  overflow-y: auto;
-  flex-shrink: 0;
-}
-.sidebar-title {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--gold-dk);
-  padding: 0 16px 10px;
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 8px;
-}
-.chapter-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 9px 16px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background .12s;
-  border-left: 3px solid transparent;
-}
-.chapter-item:hover { background: rgba(139,94,52,.08); }
-.chapter-item.active {
-  background: rgba(139,94,52,.14);
-  border-left-color: var(--gold);
-  color: var(--gold-dk);
-  font-weight: 600;
-}
-.chapter-item .ch-num {
-  font-size: 11px;
-  color: var(--gold);
-  font-family: 'Cinzel', serif;
-  min-width: 28px;
-}
-.chapter-item .ch-title {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 13px;
-}
-.chapter-item .ch-count {
-  font-size: 11px;
-  color: var(--ink-mid);
-  background: var(--parchment-dk);
-  padding: 1px 6px;
-  border-radius: 10px;
-}
-.add-chapter-btn {
-  display: block;
-  width: calc(100% - 32px);
-  margin: 12px 16px 0;
-  padding: 9px;
-  background: var(--gold-dk);
-  color: var(--parchment);
-  border: none;
-  border-radius: 6px;
-  font-family: 'Cinzel', serif;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background .15s;
-}
-.add-chapter-btn:hover { background: var(--gold); }
+.sidebar{width:260px;min-width:220px;background:var(--parchment-md);border-right:1px solid var(--border);padding:16px 0;overflow-y:auto;flex-shrink:0;}
+.sidebar-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dk);padding:0 16px 10px;text-transform:uppercase;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.chapter-item{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;cursor:pointer;font-size:14px;transition:background .12s;border-left:3px solid transparent;}
+.chapter-item:hover{background:rgba(139,94,52,.08);}
+.chapter-item.active{background:rgba(139,94,52,.14);border-left-color:var(--gold);color:var(--gold-dk);font-weight:600;}
+.chapter-item .ch-num{font-size:11px;color:var(--gold);font-family:'Cinzel',serif;min-width:28px;}
+.chapter-item .ch-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;}
+.chapter-item .ch-count{font-size:11px;color:var(--ink-mid);background:var(--parchment-dk);padding:1px 6px;border-radius:10px;}
+.add-chapter-btn{display:block;width:calc(100% - 32px);margin:12px 16px 0;padding:9px;background:var(--gold-dk);color:var(--parchment);border:none;border-radius:6px;font-family:'Cinzel',serif;font-size:13px;cursor:pointer;transition:background .15s;}
+.add-chapter-btn:hover{background:var(--gold);}
 
 /* ── EDITOR PANEL ── */
-.editor-panel {
-  flex: 1;
-  padding: 24px;
-  overflow-y: auto;
-}
-.panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.panel-header h2 {
-  font-family: 'Cinzel', serif;
-  font-size: 18px;
-  color: var(--gold-dk);
-}
-.btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.editor-panel{flex:1;padding:24px;overflow-y:auto;}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.panel-header h2{font-family:'Cinzel',serif;font-size:18px;color:var(--gold-dk);}
+.btn-group{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-action{padding:8px 18px;border-radius:6px;font-size:14px;font-family:'EB Garamond',serif;cursor:pointer;border:1px solid var(--border);background:var(--parchment);color:var(--ink);transition:background .15s;}
+.btn-action:hover{background:var(--parchment-dk);}
+.btn-action.save{background:var(--green);color:#fff;border-color:var(--green);}
+.btn-action.save:hover{background:#3a7233;}
+.btn-action.append{background:#3a5a8a;color:#fff;border-color:#3a5a8a;}
+.btn-action.append:hover{background:#4a6a9a;}
+.btn-action.danger{background:var(--crimson);color:#fff;border-color:var(--crimson);}
+.btn-action.danger:hover{background:#9a2525;}
 
-.btn-action {
-  padding: 8px 18px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-family: 'EB Garamond', serif;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  background: var(--parchment);
-  color: var(--ink);
-  transition: background .15s, transform .1s;
-}
-.btn-action:hover { background: var(--parchment-dk); }
-.btn-action.save {
-  background: var(--green);
-  color: #fff;
-  border-color: var(--green);
-}
-.btn-action.save:hover { background: #3a7233; }
-.btn-action.danger {
-  background: var(--crimson);
-  color: #fff;
-  border-color: var(--crimson);
-}
-.btn-action.danger:hover { background: #9a2525; }
+/* ── FORM ── */
+.form-row{margin-bottom:18px;}
+.form-row label{display:block;font-size:13px;font-weight:600;color:var(--gold-dk);margin-bottom:6px;letter-spacing:.3px;}
+.form-row input[type=text],.form-row input[type=number]{width:100%;padding:10px 14px;font-family:'EB Garamond',serif;font-size:16px;background:rgba(255,248,235,0.9);border:1px solid var(--border);border-radius:6px;color:var(--ink);outline:none;transition:border-color .2s;}
+.form-row input:focus{border-color:var(--gold);}
+.hint-text{font-size:12px;color:var(--ink-mid);margin-top:5px;font-style:italic;}
 
-/* ── FORM ELEMENTS ── */
-.form-row { margin-bottom: 18px; }
-.form-row label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--gold-dk);
-  margin-bottom: 6px;
-  letter-spacing: .3px;
-}
-.form-row input[type=text],
-.form-row input[type=number] {
-  width: 100%;
-  padding: 10px 14px;
-  font-family: 'EB Garamond', serif;
-  font-size: 16px;
-  background: rgba(255,248,235,0.9);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--ink);
-  outline: none;
-  transition: border-color .2s;
-}
-.form-row input:focus { border-color: var(--gold); }
+/* ── SHARED RICH TEXT TOOLBAR ── */
+.rte-wrap{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:rgba(255,248,235,0.9);}
+.rte-toolbar{display:flex;flex-wrap:wrap;gap:2px;padding:6px 8px;background:var(--parchment-dk);border-bottom:1px solid var(--border);align-items:center;}
+.rte-toolbar .tb-sep{width:1px;height:22px;background:var(--border);margin:0 3px;flex-shrink:0;}
+.tb-btn{padding:4px 8px;border-radius:4px;font-size:13px;cursor:pointer;border:1px solid transparent;background:transparent;color:var(--ink);font-family:'EB Garamond',serif;transition:background .12s,border-color .12s;line-height:1.4;white-space:nowrap;}
+.tb-btn:hover{background:var(--parchment);border-color:var(--border);}
+.tb-select{padding:4px 6px;font-size:12px;font-family:'EB Garamond',serif;background:var(--parchment);border:1px solid var(--border);border-radius:4px;color:var(--ink);cursor:pointer;outline:none;}
+.tb-color-wrap{display:flex;align-items:center;gap:3px;}
+.tb-color-wrap label{font-size:11px;color:var(--ink-mid);}
+.tb-color{width:26px;height:26px;padding:1px;border:1px solid var(--border);border-radius:4px;cursor:pointer;background:none;}
 
-textarea {
-  width: 100%;
-  padding: 12px 14px;
-  font-family: 'EB Garamond', serif;
-  font-size: 16px;
-  line-height: 1.9;
-  background: rgba(255,248,235,0.9);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--ink);
-  outline: none;
-  resize: vertical;
-  transition: border-color .2s;
-}
-textarea:focus { border-color: var(--gold); }
+/* ── RICH TEXT BODY ── */
+.rte-body{min-height:80px;padding:12px 14px;font-family:'EB Garamond',Georgia,serif;font-size:17px;line-height:1.85;color:var(--ink);outline:none;overflow-y:auto;}
+.rte-body:empty:before{content:attr(data-placeholder);color:var(--gold-lt);font-style:italic;pointer-events:none;}
+.rte-body h2{font-family:'Cinzel',serif;font-size:20px;color:var(--gold-dk);margin:16px 0 8px;text-align:center;}
+.rte-body h3{font-family:'Cinzel',serif;font-size:17px;color:var(--gold-dk);margin:14px 0 6px;}
+.rte-body p{margin:0 0 8px;}
+.rte-body blockquote{border-left:3px solid var(--gold);padding-left:14px;margin:12px 0;color:var(--ink-mid);font-style:italic;}
+.rte-body hr{border:none;border-top:1px solid var(--border);margin:16px 0;}
 
-.hint-text {
-  font-size: 12px;
-  color: var(--ink-mid);
-  margin-top: 5px;
-  font-style: italic;
-}
+/* ── VERSE ROWS ── */
+.verse-list{display:flex;flex-direction:column;gap:12px;margin-bottom:14px;}
+.verse-row{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:rgba(255,248,235,0.6);}
+.verse-row-header{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--parchment-dk);border-bottom:1px solid var(--border);}
+.verse-num-label{font-family:'Cinzel',serif;font-size:12px;color:var(--gold);font-weight:600;}
+.verse-del-btn{padding:3px 8px;background:transparent;border:1px solid var(--border);border-radius:4px;cursor:pointer;color:var(--crimson);font-size:13px;transition:background .12s;}
+.verse-del-btn:hover{background:#fbeaea;}
 
-/* ── VERSE INPUT MODE ── */
-.verse-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
-.verse-row {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-}
-.verse-num-badge {
-  min-width: 36px;
-  padding: 10px 0;
-  text-align: center;
-  font-family: 'Cinzel', serif;
-  font-size: 13px;
-  color: var(--gold);
-  font-weight: 600;
-  flex-shrink: 0;
-}
-.verse-row textarea { min-height: 70px; }
-.verse-del-btn {
-  padding: 8px 10px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  cursor: pointer;
-  color: var(--crimson);
-  font-size: 16px;
-  flex-shrink: 0;
-  transition: background .12s;
-}
-.verse-del-btn:hover { background: #fbeaea; }
-.add-verse-btn {
-  padding: 8px 16px;
-  background: transparent;
-  border: 1px dashed var(--gold);
-  border-radius: 6px;
-  color: var(--gold-dk);
-  font-family: 'EB Garamond', serif;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background .12s;
-}
-.add-verse-btn:hover { background: rgba(139,94,52,.07); }
+/* Mini toolbar for verse (same structure, smaller) */
+.verse-toolbar{display:flex;flex-wrap:wrap;gap:2px;padding:4px 8px;background:var(--parchment-md);border-bottom:1px solid var(--border);align-items:center;}
+.verse-body{min-height:60px;padding:10px 12px;font-family:'EB Garamond',Georgia,serif;font-size:16px;line-height:1.85;color:var(--ink);outline:none;}
+.verse-body:empty:before{content:attr(data-placeholder);color:var(--gold-lt);font-style:italic;pointer-events:none;}
 
-/* ── MODE TOGGLE ── */
-.mode-toggle {
-  display: flex;
-  gap: 0;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  overflow: hidden;
-  margin-bottom: 16px;
-  width: fit-content;
-}
-.mode-btn {
-  padding: 7px 16px;
-  font-size: 13px;
-  font-family: 'EB Garamond', serif;
-  border: none;
-  background: var(--parchment);
-  color: var(--ink-mid);
-  cursor: pointer;
-  transition: background .12s, color .12s;
-}
-.mode-btn.active {
-  background: var(--gold-dk);
-  color: var(--parchment);
-}
+.add-verse-btn{padding:8px 16px;background:transparent;border:1px dashed var(--gold);border-radius:6px;color:var(--gold-dk);font-family:'EB Garamond',serif;font-size:14px;cursor:pointer;transition:background .12s;}
+.add-verse-btn:hover{background:rgba(139,94,52,.07);}
 
-/* ── STATUS TOAST ── */
-#toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(80px);
-  background: var(--gold-dk);
-  color: var(--parchment);
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-family: 'Cinzel', serif;
-  z-index: 999;
-  transition: transform .3s ease;
-  pointer-events: none;
-  white-space: nowrap;
-}
-#toast.show { transform: translateX(-50%) translateY(0); }
-#toast.error { background: var(--crimson); }
+/* Bulk mode */
+.bulk-ta{width:100%;padding:12px 14px;font-family:'EB Garamond',serif;font-size:16px;line-height:1.9;background:rgba(255,248,235,0.9);border:1px solid var(--border);border-radius:6px;color:var(--ink);outline:none;resize:vertical;}
+.bulk-ta:focus{border-color:var(--gold);}
 
-/* ── EMPTY STATE ── */
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--ink-mid);
-}
-.empty-state .icon { font-size: 48px; margin-bottom: 16px; }
-.empty-state p { font-style: italic; font-size: 15px; }
+/* Mode toggle */
+.mode-toggle{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;width:fit-content;margin-bottom:16px;}
+.mode-btn{padding:7px 16px;font-size:13px;font-family:'EB Garamond',serif;border:none;background:var(--parchment);color:var(--ink-mid);cursor:pointer;transition:background .12s,color .12s;}
+.mode-btn.active{background:var(--gold-dk);color:var(--parchment);}
+
+/* ── HISTORY LAYOUT ── */
+.history-layout{display:flex;gap:20px;width:100%;}
+.history-left{flex:1;min-width:0;}
+.history-right{flex:1;min-width:0;}
+.preview-label{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dk);text-transform:uppercase;margin-bottom:8px;}
+.preview-box{border:1px solid var(--border);border-radius:8px;padding:18px;background:rgba(255,248,235,0.7);min-height:400px;overflow-y:auto;font-family:'EB Garamond',Georgia,serif;font-size:16px;line-height:1.85;}
+.preview-box h2{font-family:'Cinzel',serif;font-size:20px;color:var(--gold-dk);margin:16px 0 8px;text-align:center;}
+.preview-box h3{font-family:'Cinzel',serif;font-size:17px;color:var(--gold-dk);margin:14px 0 6px;}
 
 /* ── CONFIRM DIALOG ── */
-.overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(43,29,14,0.5);
-  z-index: 500;
-  align-items: center;
-  justify-content: center;
-}
-.overlay.show { display: flex; }
-.dialog {
-  background: var(--parchment);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 32px;
-  max-width: 400px;
-  width: 90%;
-  text-align: center;
-  box-shadow: 0 12px 40px var(--shadow);
-}
-.dialog h3 {
-  font-family: 'Cinzel', serif;
-  color: var(--crimson);
-  margin-bottom: 12px;
-}
-.dialog p { font-size: 15px; color: var(--ink-mid); margin-bottom: 22px; }
-.dialog-btns { display: flex; gap: 10px; justify-content: center; }
+.overlay{display:none;position:fixed;inset:0;background:rgba(43,29,14,0.5);z-index:500;align-items:center;justify-content:center;}
+.overlay.show{display:flex;}
+.dialog{background:var(--parchment);border:1px solid var(--border);border-radius:var(--radius);padding:32px;max-width:400px;width:90%;text-align:center;box-shadow:0 12px 40px var(--shadow);}
+.dialog h3{font-family:'Cinzel',serif;color:var(--crimson);margin-bottom:12px;}
+.dialog p{font-size:15px;color:var(--ink-mid);margin-bottom:22px;}
+.dialog-btns{display:flex;gap:10px;justify-content:center;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--gold-dk);color:var(--parchment);padding:12px 24px;border-radius:8px;font-size:14px;font-family:'Cinzel',serif;z-index:999;transition:transform .3s ease;pointer-events:none;white-space:nowrap;}
+#toast.show{transform:translateX(-50%) translateY(0);}
+#toast.error{background:var(--crimson);}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:60px 20px;color:var(--ink-mid);}
+.empty-state .icon{font-size:48px;margin-bottom:16px;}
+.empty-state p{font-style:italic;font-size:15px;}
 
 /* ── RESPONSIVE ── */
-@media (max-width: 640px) {
-  .sidebar { width: 200px; min-width: 180px; }
-  .editor-panel { padding: 16px; }
-  .topbar h1 { font-size: 14px; }
-  .repo-badge { display: none; }
-}
-@media (max-width: 480px) {
-  .workspace { flex-direction: column; }
-  .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); max-height: 200px; }
-}
+@media(max-width:900px){.history-layout{flex-direction:column;}}
+@media(max-width:640px){.sidebar{width:200px;min-width:180px;}.editor-panel{padding:14px;}.topbar h1{font-size:14px;}.repo-badge{display:none;}.tb-btn{padding:3px 5px;font-size:11px;}}
+@media(max-width:480px){.workspace{flex-direction:column;}.sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);max-height:180px;}}
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════
-     LOGIN SCREEN
-══════════════════════════════════════════════ -->
+<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="crown">📜</div>
     <h1>Enoch Book Editor</h1>
     <p>Connect to your GitHub repository to edit chapters and history</p>
-
     <div class="field-group">
       <label>GitHub Personal Access Token</label>
       <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-      <div class="hint">
-        Needs <strong>repo</strong> scope.
-        <a href="https://github.com/settings/tokens/new?scopes=repo&description=Enoch+Editor" target="_blank" style="color:var(--gold-dk)">Create one here ↗</a>
-      </div>
+      <div class="hint">Needs <strong>repo</strong> scope. <a href="https://github.com/settings/tokens/new?scopes=repo&description=Enoch+Editor" target="_blank" style="color:var(--gold-dk)">Create one here ↗</a></div>
     </div>
-
     <div class="field-group">
       <label>Repository (owner/repo)</label>
       <input type="text" id="repoInput" placeholder="JohnnyChristian/Book-of-Enoch">
     </div>
-
     <div class="field-group">
       <label>Branch</label>
       <input type="text" id="branchInput" value="main" placeholder="main">
     </div>
-
     <div class="field-group">
       <label>Data folder path</label>
       <input type="text" id="pathInput" value="data" placeholder="data">
       <div class="hint">Folder containing chapters.json and history.json</div>
     </div>
-
     <button class="btn-primary" onclick="connect()">🔗 Connect &amp; Load</button>
-
-    <p style="font-size:11px; color:var(--ink-mid); margin-top:16px; font-style:italic;">
-      Your token is stored only in this browser session and never sent anywhere except GitHub's API.
-    </p>
+    <p style="font-size:11px;color:var(--ink-mid);margin-top:16px;font-style:italic;">Your token stays in this browser session only and is never sent anywhere except GitHub's API.</p>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     MAIN APP
-══════════════════════════════════════════════ -->
+<!-- MAIN APP -->
 <div id="app">
-
   <div class="topbar">
     <h1>📖 Enoch Editor</h1>
     <div class="topbar-right">
@@ -545,7 +211,7 @@ textarea:focus { border-color: var(--gold); }
 
   <div class="tab-row">
     <button class="tab-btn active" id="tabChapters" onclick="switchTab('chapters')">📚 Chapters</button>
-    <button class="tab-btn" id="tabHistory" onclick="switchTab('history')">📜 History</button>
+    <button class="tab-btn"        id="tabHistory"  onclick="switchTab('history')">📜 History</button>
   </div>
 
   <!-- CHAPTERS TAB -->
@@ -556,30 +222,42 @@ textarea:focus { border-color: var(--gold); }
       <button class="add-chapter-btn" onclick="newChapter()">+ Add Chapter</button>
     </div>
     <div class="editor-panel" id="chapterEditor">
-      <div class="empty-state">
-        <div class="icon">✍️</div>
-        <p>Select a chapter to edit, or add a new one</p>
-      </div>
+      <div class="empty-state"><div class="icon">✍️</div><p>Select a chapter to edit, or add a new one</p></div>
     </div>
   </div>
 
   <!-- HISTORY TAB -->
-  <div id="historyTab" class="workspace" style="display:none;">
-    <div class="editor-panel" style="max-width:860px; margin:0 auto;">
-      <div class="panel-header">
-        <h2>History Content</h2>
+  <div id="historyTab" class="workspace" style="display:none;padding:24px;">
+    <div style="width:100%;">
+      <div class="panel-header" style="margin-bottom:16px;">
+        <h2 style="font-family:'Cinzel',serif;font-size:18px;color:var(--gold-dk);">History Editor</h2>
         <div class="btn-group">
-          <button class="btn-action save" onclick="saveHistory()">💾 Save to GitHub</button>
+          <button class="btn-action save"   onclick="saveHistory('replace')">💾 Save (Replace All)</button>
+          <button class="btn-action append" onclick="saveHistory('append')">＋ Append to Existing</button>
         </div>
       </div>
-      <div class="form-row">
-        <label>Full history text (Gujarati)</label>
-        <textarea id="historyContent" rows="28" placeholder="Enter history text here…"></textarea>
-        <div class="hint-text">This is the complete content of history.json. Edit freely — the file will be saved exactly as written.</div>
+      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:16px;padding:10px 14px;background:rgba(139,94,52,.07);border-radius:6px;border-left:3px solid var(--gold-lt);">
+        <strong>Save (Replace All)</strong> — overwrites the entire history with what you type here.&nbsp;&nbsp;
+        <strong>Append</strong> — adds what you type to the <em>end</em> of the existing history.
+      </div>
+      <div class="history-layout">
+        <div class="history-left">
+          <div class="preview-label" style="margin-bottom:8px;">✏️ Editor</div>
+          <div class="rte-wrap">
+            <div class="rte-toolbar" id="histToolbar"><!-- built by JS --></div>
+            <div id="histRteBody" class="rte-body" contenteditable="true"
+                 data-placeholder="Type or paste your Gujarati history content here…"
+                 oninput="syncPreview()"></div>
+          </div>
+          <div style="font-size:12px;color:var(--ink-mid);margin-top:6px;font-style:italic;">Select text then click a toolbar button to format it.</div>
+        </div>
+        <div class="history-right">
+          <div class="preview-label">👁 Live Preview</div>
+          <div class="preview-box" id="historyPreview"></div>
+        </div>
       </div>
     </div>
   </div>
-
 </div>
 
 <!-- Confirm Dialog -->
@@ -593,195 +271,366 @@ textarea:focus { border-color: var(--gold); }
     </div>
   </div>
 </div>
-
-<!-- Toast -->
 <div id="toast"></div>
 
 <script>
-/* ════════════════════════════════════════════════
+/* ══════════════════════════════════════════════
    STATE
-════════════════════════════════════════════════ */
-let TOKEN  = '';
-let REPO   = '';
-let BRANCH = 'main';
-let DATA_PATH = 'data';
+══════════════════════════════════════════════ */
+let TOKEN='',REPO='',BRANCH='main',DATA_PATH='data';
+let chaptersData=null,historyData=null,chaptersSha='',historySha='';
+let currentChapterIdx=null,verseMode='individual';
+const GU='૦૧૨૩૪૫૬૭૮૯';
 
-let chaptersData = null;   // full parsed chapters.json
-let historyData  = null;   // full parsed history.json
-let chaptersSha  = '';     // GitHub blob SHA for chapters.json
-let historySha   = '';     // GitHub blob SHA for history.json
-
-let currentChapterIdx = null;
-let activeTab = 'chapters';
-
-const GU = '૦૧૨૩૪૫૬૭૮૯';
-
-/* ════════════════════════════════════════════════
+/* ══════════════════════════════════════════════
    GUJARATI HELPERS
-════════════════════════════════════════════════ */
-function toGu(n) {
-  return String(n).split('').map(d => GU[+d]).join('');
+══════════════════════════════════════════════ */
+function toGu(n){return String(n).split('').map(d=>GU[+d]).join('');}
+
+// Strip any leading numeral prefix (Gujarati or ASCII) from HTML content
+// so we can re-apply a clean one
+function stripPrefix(html){
+  // Remove leading text node that looks like "૧. " or "1. "
+  return html.replace(/^([0-9૦-૯]+\.\s*)/,'');
 }
 
-function normalizeVerse(text, num) {
-  let t = text.trim();
-  // strip any existing numeral prefix the user typed
-  t = t.replace(/^[0-9૦-૯]+\.\s*/, '');
-  return `${toGu(num)}. ${t}`;
+// Build the verse string stored in JSON:
+// prefix as plain text + the rest of the HTML
+function buildVerseString(num, html){
+  const inner = html.trim();
+  // If empty, skip
+  if(!inner || inner==='<br>') return null;
+  const stripped = stripPrefix(inner);
+  return `${toGu(num)}. ${stripped}`;
 }
 
-function parseVerses(raw) {
-  // Accept bulk text: one verse per line (blank lines ignored)
-  // Each line may or may not start with a numeral prefix
-  const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
-  return lines.map((line, i) => normalizeVerse(line, i + 1));
-}
-
-/* ════════════════════════════════════════════════
-   GITHUB API
-════════════════════════════════════════════════ */
-async function ghGet(path) {
-  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}?ref=${BRANCH}`, {
-    headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+function parseVersesFromBulk(raw){
+  return raw.split('\n').map(l=>l.trim()).filter(Boolean).map((line,i)=>{
+    const text = line.replace(/^[0-9૦-૯]+\.\s*/,'');
+    return `${toGu(i+1)}. ${text}`;
   });
-  if (!r.ok) throw new Error(`GitHub GET failed: ${r.status} ${await r.text()}`);
-  return r.json();
 }
 
-async function ghPut(path, content, sha, message) {
-  const body = {
-    message,
-    content: btoa(unescape(encodeURIComponent(content))),
-    branch: BRANCH
-  };
-  if (sha) body.sha = sha;
-  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
-    method: 'PUT',
-    headers: {
-      Authorization: `token ${TOKEN}`,
-      Accept: 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-  if (!r.ok) throw new Error(`GitHub PUT failed: ${r.status} ${await r.text()}`);
-  return r.json();
+// Extract display HTML for a verse (strip the leading numeral prefix for the editor body)
+function verseBodyHTML(verseStr){
+  return verseStr.replace(/^[0-9૦-૯]+\.\s*/,'');
 }
 
-function ghDecode(b64) {
-  return decodeURIComponent(escape(atob(b64.replace(/\n/g, ''))));
-}
+/* ══════════════════════════════════════════════
+   SHARED TOOLBAR BUILDER
+══════════════════════════════════════════════ */
+// targetId = contenteditable element id
+// onInput  = callback after any command (for preview sync etc.)
+function buildToolbar(containerId, targetId, onInput){
+  const bar = document.getElementById(containerId);
+  bar.innerHTML='';
 
-/* ════════════════════════════════════════════════
-   CONNECT / LOAD
-════════════════════════════════════════════════ */
-async function connect() {
-  TOKEN     = document.getElementById('tokenInput').value.trim();
-  REPO      = document.getElementById('repoInput').value.trim();
-  BRANCH    = document.getElementById('branchInput').value.trim() || 'main';
-  DATA_PATH = document.getElementById('pathInput').value.trim().replace(/\/$/, '') || 'data';
-
-  if (!TOKEN || !REPO) { toast('Please fill in token and repository', true); return; }
-
-  toast('Connecting to GitHub…');
-  try {
-    await reloadData(true);
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('repoLabel').textContent = REPO + ' / ' + BRANCH;
-    // persist settings (not token) for convenience
-    sessionStorage.setItem('enochRepo',   REPO);
-    sessionStorage.setItem('enochBranch', BRANCH);
-    sessionStorage.setItem('enochPath',   DATA_PATH);
-  } catch(e) {
-    toast('Connection failed: ' + e.message, true);
+  function btn(label, title, cmd, val=null){
+    const b=document.createElement('button');
+    b.className='tb-btn'; b.title=title; b.innerHTML=label;
+    b.onmousedown=e=>{
+      e.preventDefault(); // keep focus in contenteditable
+      const el=document.getElementById(targetId);
+      el.focus();
+      if(cmd==='formatBlock') document.execCommand('formatBlock',false,val);
+      else if(cmd==='fontSize') applyFontSize(targetId,val);
+      else if(cmd==='foreColor') return; // handled by color input
+      else if(cmd==='hiliteColor') return;
+      else if(cmd==='insertHR') document.execCommand('insertHTML',false,'<hr>');
+      else if(cmd==='removeFormat') document.execCommand('removeFormat',false,null);
+      else document.execCommand(cmd,false,val);
+      if(onInput) onInput();
+    };
+    return b;
   }
+
+  function sep(){const d=document.createElement('div');d.className='tb-sep';return d;}
+
+  function sel(options, title, onChange){
+    const s=document.createElement('select');
+    s.className='tb-select'; s.title=title;
+    options.forEach(([val,label])=>{const o=document.createElement('option');o.value=val;o.textContent=label;s.appendChild(o);});
+    s.onchange=()=>{onChange(s.value);s.selectedIndex=0;};
+    return s;
+  }
+
+  function colorPicker(label, title, onChange){
+    const wrap=document.createElement('div');wrap.className='tb-color-wrap';
+    const lbl=document.createElement('label');lbl.textContent=label;
+    const inp=document.createElement('input');inp.type='color';inp.className='tb-color';inp.value='#8b0000';inp.title=title;
+    inp.oninput=()=>{ const el=document.getElementById(targetId); el.focus(); onChange(inp.value); if(onInput) onInput(); };
+    wrap.appendChild(lbl); wrap.appendChild(inp);
+    return wrap;
+  }
+
+  // Block style
+  bar.appendChild(sel([
+    ['p','Paragraph'],['h2','Heading 1'],['h3','Heading 2'],['blockquote','Quote']
+  ],'Paragraph style',(v)=>{
+    document.getElementById(targetId).focus();
+    document.execCommand('formatBlock',false,v);
+    if(onInput) onInput();
+  }));
+
+  bar.appendChild(sep());
+
+  // Inline
+  bar.appendChild(btn('<b>B</b>','Bold','bold'));
+  bar.appendChild(btn('<i>I</i>','Italic','italic'));
+  bar.appendChild(btn('<u>U</u>','Underline','underline'));
+  bar.appendChild(btn('<s>S</s>','Strikethrough','strikeThrough'));
+
+  bar.appendChild(sep());
+
+  // Alignment
+  bar.appendChild(btn('⬅','Align left','justifyLeft'));
+  bar.appendChild(btn('☰','Centre','justifyCenter'));
+  bar.appendChild(btn('➡','Align right','justifyRight'));
+
+  bar.appendChild(sep());
+
+  // Font size
+  bar.appendChild(sel([
+    ['','Size'],['13px','Small'],['17px','Normal'],['20px','Large'],['24px','X-Large']
+  ],'Font size',(v)=>{ if(v) applyFontSize(targetId,v); if(onInput) onInput(); }));
+
+  bar.appendChild(sep());
+
+  // Colors
+  bar.appendChild(colorPicker('Color','Text color',(c)=>document.execCommand('foreColor',false,c)));
+  bar.appendChild(colorPicker('Highlight','Highlight color',(c)=>document.execCommand('hiliteColor',false,c)));
+
+  bar.appendChild(sep());
+
+  // HR and clear
+  const hrBtn=document.createElement('button');hrBtn.className='tb-btn';hrBtn.textContent='― HR';hrBtn.title='Insert divider';
+  hrBtn.onmousedown=e=>{e.preventDefault();document.getElementById(targetId).focus();document.execCommand('insertHTML',false,'<hr>');if(onInput)onInput();};
+  bar.appendChild(hrBtn);
+
+  const clrBtn=document.createElement('button');clrBtn.className='tb-btn';clrBtn.textContent='✕ Clear';clrBtn.title='Clear formatting';
+  clrBtn.onmousedown=e=>{e.preventDefault();document.getElementById(targetId).focus();document.execCommand('removeFormat',false,null);if(onInput)onInput();};
+  bar.appendChild(clrBtn);
 }
 
-async function reloadData(silent = false) {
-  if (!silent) toast('Reloading from GitHub…');
-  const [chFile, hiFile] = await Promise.all([
+function applyFontSize(targetId, size){
+  const sel=window.getSelection();
+  if(!sel||!sel.rangeCount) return;
+  const range=sel.getRangeAt(0);
+  if(range.collapsed) return;
+  const span=document.createElement('span');
+  span.style.fontSize=size;
+  try{range.surroundContents(span);}catch(e){span.appendChild(range.extractContents());range.insertNode(span);}
+}
+
+/* Compact toolbar for individual verse rows (same buttons, no HR/block) */
+function buildVerseToolbar(toolbarEl, bodyEl){
+  toolbarEl.innerHTML='';
+
+  function vBtn(label,title,fn){
+    const b=document.createElement('button');b.className='tb-btn';b.title=title;b.innerHTML=label;
+    b.onmousedown=e=>{e.preventDefault();bodyEl.focus();fn();};
+    return b;
+  }
+  function vSep(){const d=document.createElement('div');d.className='tb-sep';return d;}
+
+  toolbarEl.appendChild(vBtn('<b>B</b>','Bold',()=>document.execCommand('bold',false,null)));
+  toolbarEl.appendChild(vBtn('<i>I</i>','Italic',()=>document.execCommand('italic',false,null)));
+  toolbarEl.appendChild(vBtn('<u>U</u>','Underline',()=>document.execCommand('underline',false,null)));
+  toolbarEl.appendChild(vSep());
+  toolbarEl.appendChild(vBtn('⬅','Align left',()=>document.execCommand('justifyLeft',false,null)));
+  toolbarEl.appendChild(vBtn('☰','Centre',()=>document.execCommand('justifyCenter',false,null)));
+  toolbarEl.appendChild(vSep());
+
+  // Font size
+  const szSel=document.createElement('select');szSel.className='tb-select';szSel.title='Font size';
+  [['','Sz'],['13px','S'],['17px','M'],['20px','L'],['24px','XL']].forEach(([v,l])=>{
+    const o=document.createElement('option');o.value=v;o.textContent=l;szSel.appendChild(o);
+  });
+  szSel.onchange=()=>{if(szSel.value){bodyEl.focus();applyFontSize('',szSel.value);}szSel.selectedIndex=0;};
+  // Override applyFontSize to use bodyEl directly
+  szSel.onchange=()=>{
+    if(!szSel.value) return;
+    const sz=szSel.value;
+    const sel=window.getSelection();
+    if(!sel||!sel.rangeCount){szSel.selectedIndex=0;return;}
+    const range=sel.getRangeAt(0);
+    if(!range.collapsed){
+      const span=document.createElement('span');span.style.fontSize=sz;
+      try{range.surroundContents(span);}catch(e){span.appendChild(range.extractContents());range.insertNode(span);}
+    }
+    szSel.selectedIndex=0;
+  };
+  toolbarEl.appendChild(szSel);
+  toolbarEl.appendChild(vSep());
+
+  // Text color
+  const cWrap=document.createElement('div');cWrap.className='tb-color-wrap';
+  const cLbl=document.createElement('label');cLbl.textContent='Color';
+  const cInp=document.createElement('input');cInp.type='color';cInp.className='tb-color';cInp.value='#8b0000';cInp.title='Text color';
+  cInp.oninput=()=>{bodyEl.focus();document.execCommand('foreColor',false,cInp.value);};
+  cWrap.appendChild(cLbl);cWrap.appendChild(cInp);
+  toolbarEl.appendChild(cWrap);
+
+  // Highlight
+  const hWrap=document.createElement('div');hWrap.className='tb-color-wrap';hWrap.style.marginLeft='3px';
+  const hLbl=document.createElement('label');hLbl.textContent='Hi';
+  const hInp=document.createElement('input');hInp.type='color';hInp.className='tb-color';hInp.value='#fffde7';hInp.title='Highlight';
+  hInp.oninput=()=>{bodyEl.focus();document.execCommand('hiliteColor',false,hInp.value);};
+  hWrap.appendChild(hLbl);hWrap.appendChild(hInp);
+  toolbarEl.appendChild(hWrap);
+
+  toolbarEl.appendChild(vSep());
+  const clr=document.createElement('button');clr.className='tb-btn';clr.textContent='✕';clr.title='Clear formatting';
+  clr.onmousedown=e=>{e.preventDefault();bodyEl.focus();document.execCommand('removeFormat',false,null);};
+  toolbarEl.appendChild(clr);
+}
+
+/* ══════════════════════════════════════════════
+   GITHUB API
+══════════════════════════════════════════════ */
+async function ghGet(path){
+  const r=await fetch(`https://api.github.com/repos/${REPO}/contents/${path}?ref=${BRANCH}`,
+    {headers:{Authorization:`token ${TOKEN}`,Accept:'application/vnd.github.v3+json'}});
+  if(!r.ok) throw new Error(`GitHub GET ${r.status}: ${await r.text()}`);
+  return r.json();
+}
+async function ghPut(path,content,sha,message){
+  const body={message,content:btoa(unescape(encodeURIComponent(content))),branch:BRANCH};
+  if(sha) body.sha=sha;
+  const r=await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`,{
+    method:'PUT',
+    headers:{Authorization:`token ${TOKEN}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  });
+  if(!r.ok) throw new Error(`GitHub PUT ${r.status}: ${await r.text()}`);
+  return r.json();
+}
+function ghDecode(b64){return decodeURIComponent(escape(atob(b64.replace(/\n/g,''))));}
+
+/* ══════════════════════════════════════════════
+   CONNECT / LOAD
+══════════════════════════════════════════════ */
+async function connect(){
+  TOKEN    =document.getElementById('tokenInput').value.trim();
+  REPO     =document.getElementById('repoInput').value.trim();
+  BRANCH   =document.getElementById('branchInput').value.trim()||'main';
+  DATA_PATH=document.getElementById('pathInput').value.trim().replace(/\/$/,'')||'data';
+  if(!TOKEN||!REPO){toast('Please fill in token and repository',true);return;}
+  toast('Connecting…');
+  try{
+    await reloadData(true);
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='block';
+    document.getElementById('repoLabel').textContent=REPO+' / '+BRANCH;
+    sessionStorage.setItem('enochRepo',REPO);
+    sessionStorage.setItem('enochBranch',BRANCH);
+    sessionStorage.setItem('enochPath',DATA_PATH);
+    // Build history toolbar once
+    buildToolbar('histToolbar','histRteBody',syncPreview);
+  }catch(e){toast('Connection failed: '+e.message,true);}
+}
+
+async function reloadData(silent=false){
+  if(!silent) toast('Reloading…');
+  const [chFile,hiFile]=await Promise.all([
     ghGet(`${DATA_PATH}/chapters.json`),
     ghGet(`${DATA_PATH}/history.json`)
   ]);
-  chaptersData = JSON.parse(ghDecode(chFile.content));
-  historyData  = JSON.parse(ghDecode(hiFile.content));
-  chaptersSha  = chFile.sha;
-  historySha   = hiFile.sha;
-
+  chaptersData=JSON.parse(ghDecode(chFile.content));
+  historyData =JSON.parse(ghDecode(hiFile.content));
+  chaptersSha =chFile.sha;
+  historySha  =hiFile.sha;
   renderChapterList();
-  document.getElementById('historyContent').value = historyData.content || '';
-  currentChapterIdx = null;
+  document.getElementById('histRteBody').innerHTML=historyData.content||'';
+  syncPreview();
+  currentChapterIdx=null;
   renderEmptyState();
-  if (!silent) toast('Reloaded ✓');
+  if(!silent) toast('Reloaded ✓');
 }
 
-function logout() {
-  TOKEN = ''; REPO = ''; chaptersData = null; historyData = null;
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
+function logout(){
+  TOKEN='';REPO='';chaptersData=null;historyData=null;
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('app').style.display='none';
 }
 
-/* ════════════════════════════════════════════════
+/* ══════════════════════════════════════════════
+   HISTORY PREVIEW SYNC
+══════════════════════════════════════════════ */
+function syncPreview(){
+  document.getElementById('historyPreview').innerHTML=
+    document.getElementById('histRteBody').innerHTML;
+}
+
+/* ══════════════════════════════════════════════
+   SAVE HISTORY
+══════════════════════════════════════════════ */
+async function saveHistory(mode){
+  const editorHTML=document.getElementById('histRteBody').innerHTML.trim();
+  if(!editorHTML){toast('Nothing to save',true);return;}
+  let finalContent;
+  if(mode==='append'){
+    const existing=(historyData.content||'').trim();
+    finalContent=existing?existing+'\n\n'+editorHTML:editorHTML;
+    document.getElementById('histRteBody').innerHTML=finalContent;
+    syncPreview();
+  } else {
+    finalContent=editorHTML;
+  }
+  historyData.content=finalContent;
+  try{
+    toast('Saving history…');
+    const json=JSON.stringify(historyData,null,2);
+    const result=await ghPut(`${DATA_PATH}/history.json`,json,historySha,
+      mode==='append'?'Append to history.json':'Update history.json');
+    historySha=result.content.sha;
+    toast('✅ History saved!');
+  }catch(e){toast('Save failed: '+e.message,true);}
+}
+
+/* ══════════════════════════════════════════════
    TAB SWITCHING
-════════════════════════════════════════════════ */
-function switchTab(tab) {
-  activeTab = tab;
-  document.getElementById('chaptersTab').style.display = tab === 'chapters' ? 'flex' : 'none';
-  document.getElementById('historyTab').style.display  = tab === 'history'  ? 'flex' : 'none';
-  document.getElementById('tabChapters').classList.toggle('active', tab === 'chapters');
-  document.getElementById('tabHistory').classList.toggle('active',  tab === 'history');
+══════════════════════════════════════════════ */
+function switchTab(tab){
+  document.getElementById('chaptersTab').style.display=tab==='chapters'?'flex':'none';
+  document.getElementById('historyTab').style.display =tab==='history' ?'flex':'none';
+  document.getElementById('tabChapters').classList.toggle('active',tab==='chapters');
+  document.getElementById('tabHistory').classList.toggle('active', tab==='history');
 }
 
-/* ════════════════════════════════════════════════
+/* ══════════════════════════════════════════════
    CHAPTER LIST
-════════════════════════════════════════════════ */
-function renderChapterList() {
-  const list = document.getElementById('chapterList');
-  list.innerHTML = '';
-  (chaptersData.chapters || []).forEach((ch, i) => {
-    const div = document.createElement('div');
-    div.className = 'chapter-item' + (i === currentChapterIdx ? ' active' : '');
-    div.innerHTML = `
-      <span class="ch-num">${ch.n}</span>
-      <span class="ch-title">${ch.title}</span>
-      <span class="ch-count">${ch.verses.length}v</span>
-    `;
-    div.onclick = () => openChapter(i);
+══════════════════════════════════════════════ */
+function renderChapterList(){
+  const list=document.getElementById('chapterList');
+  list.innerHTML='';
+  (chaptersData.chapters||[]).forEach((ch,i)=>{
+    const div=document.createElement('div');
+    div.className='chapter-item'+(i===currentChapterIdx?' active':'');
+    div.innerHTML=`<span class="ch-num">${ch.n}</span><span class="ch-title">${escHtml(ch.title)}</span><span class="ch-count">${ch.verses.length}v</span>`;
+    div.onclick=()=>openChapter(i);
     list.appendChild(div);
   });
 }
+function renderEmptyState(){
+  document.getElementById('chapterEditor').innerHTML=`<div class="empty-state"><div class="icon">✍️</div><p>Select a chapter to edit, or add a new one</p></div>`;
+}
+function openChapter(idx){currentChapterIdx=idx;renderChapterList();renderChapterEditor();}
 
-/* ════════════════════════════════════════════════
+/* ══════════════════════════════════════════════
    CHAPTER EDITOR
-════════════════════════════════════════════════ */
-function renderEmptyState() {
-  document.getElementById('chapterEditor').innerHTML = `
-    <div class="empty-state">
-      <div class="icon">✍️</div>
-      <p>Select a chapter to edit, or add a new one</p>
-    </div>`;
-}
-
-function openChapter(idx) {
-  currentChapterIdx = idx;
-  renderChapterList();
-  renderChapterEditor();
-}
-
-function renderChapterEditor() {
-  const ch  = chaptersData.chapters[currentChapterIdx];
-  const panel = document.getElementById('chapterEditor');
-
-  panel.innerHTML = `
+══════════════════════════════════════════════ */
+function renderChapterEditor(){
+  const ch=chaptersData.chapters[currentChapterIdx];
+  const panel=document.getElementById('chapterEditor');
+  panel.innerHTML=`
     <div class="panel-header">
       <h2>Chapter ${ch.n}</h2>
       <div class="btn-group">
-        <button class="btn-action save" onclick="saveChapters('Updated chapter ${ch.n}')">💾 Save to GitHub</button>
-        <button class="btn-action danger" onclick="askDeleteChapter(${currentChapterIdx})">🗑 Delete Chapter</button>
+        <button class="btn-action save"   onclick="saveChapters('Updated chapter ${ch.n}')">💾 Save to GitHub</button>
+        <button class="btn-action danger" onclick="askDeleteChapter(${currentChapterIdx})">🗑 Delete</button>
       </div>
     </div>
-
     <div class="form-row">
       <label>Chapter Number</label>
       <input type="number" id="chNum" value="${ch.n}" min="1">
@@ -790,127 +639,129 @@ function renderChapterEditor() {
       <label>Chapter Title (Gujarati)</label>
       <input type="text" id="chTitle" value="${escHtml(ch.title)}">
     </div>
-
-    <div style="margin-bottom:16px;">
-      <div style="font-size:13px; font-weight:600; color:var(--gold-dk); margin-bottom:8px;">Verses</div>
+    <div>
+      <div style="font-size:13px;font-weight:600;color:var(--gold-dk);margin-bottom:8px;">Verses</div>
       <div class="mode-toggle">
-        <button class="mode-btn active" id="modeBtnIndiv" onclick="setVerseMode('individual')">One by One</button>
-        <button class="mode-btn" id="modeBtnBulk"  onclick="setVerseMode('bulk')">Paste All at Once</button>
+        <button class="mode-btn active" id="modeBtnIndiv" onclick="setVerseMode('individual')">Rich Text (one by one)</button>
+        <button class="mode-btn"        id="modeBtnBulk"  onclick="setVerseMode('bulk')">Paste Whole Chapter</button>
       </div>
-
-      <!-- INDIVIDUAL MODE -->
       <div id="modeIndividual">
         <div class="verse-list" id="verseList"></div>
         <button class="add-verse-btn" onclick="addVerseRow()">+ Add Verse</button>
       </div>
-
-      <!-- BULK MODE -->
       <div id="modeBulk" style="display:none;">
-        <textarea id="bulkVerses" rows="18"
-          placeholder="Paste all verses here, one per line.\n\nYou can include or omit the Gujarati numeral prefix — the editor will fix them automatically.\n\nExample:\nઆ હનોખના આશીર્વાદના વચનો છે\nહનોખ, જે એક ન્યાયી પુરુષ હતો…"></textarea>
-        <div class="hint-text">One verse per line. Blank lines are ignored. Prefixes like ૧. ૨. are auto-applied.</div>
+        <textarea class="bulk-ta" id="bulkVerses" rows="20"
+          placeholder="Paste the entire chapter here — one verse per line.&#10;&#10;Gujarati numeral prefixes (૧. ૨. etc.) are applied automatically.&#10;Blank lines are ignored.&#10;&#10;Note: bulk mode saves plain text without rich formatting.&#10;Use Rich Text mode to add bold, color, italics to individual verses."></textarea>
+        <div class="hint-text">One verse per line · Blank lines ignored · Numeral prefixes auto-applied · Plain text only</div>
       </div>
-    </div>
-  `;
-
+    </div>`;
+  verseMode='individual';
   renderVerseRows(ch.verses);
 }
 
-function renderVerseRows(verses) {
-  const list = document.getElementById('verseList');
-  list.innerHTML = '';
-  verses.forEach((v, i) => {
-    // strip leading numeral for display in textarea
-    const text = v.replace(/^[0-9૦-૯]+\.\s*/, '');
-    addVerseRow(text, i);
-  });
+/* ── VERSE ROWS (rich text) ── */
+function renderVerseRows(verses){
+  const list=document.getElementById('verseList');
+  list.innerHTML='';
+  verses.forEach((v,i)=>addVerseRow(verseBodyHTML(v),i));
 }
 
-function addVerseRow(text = '', insertAt = null) {
-  const list  = document.getElementById('verseList');
-  const idx   = insertAt !== null ? insertAt : list.children.length;
-  const num   = idx + 1;
-  const row   = document.createElement('div');
-  row.className = 'verse-row';
-  row.dataset.idx = idx;
-  row.innerHTML = `
-    <div class="verse-num-badge">${toGu(num)}</div>
-    <textarea rows="2">${escHtml(text)}</textarea>
-    <button class="verse-del-btn" onclick="removeVerseRow(this)" title="Delete verse">✕</button>
-  `;
+function addVerseRow(htmlContent='', insertAt=null){
+  const list=document.getElementById('verseList');
+  const idx=insertAt!==null?insertAt:list.children.length;
+  const num=idx+1;
+  const uid='verse_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+
+  const row=document.createElement('div');
+  row.className='verse-row';
+
+  const header=document.createElement('div');
+  header.className='verse-row-header';
+  header.innerHTML=`<span class="verse-num-label">${toGu(num)}.</span>`;
+  const delBtn=document.createElement('button');
+  delBtn.className='verse-del-btn';delBtn.title='Delete verse';delBtn.textContent='✕ Delete verse';
+  delBtn.onclick=()=>{row.remove();renumberVerseRows();};
+  header.appendChild(delBtn);
+
+  const toolbar=document.createElement('div');
+  toolbar.className='verse-toolbar';
+
+  const body=document.createElement('div');
+  body.className='verse-body';
+  body.contentEditable='true';
+  body.id=uid;
+  body.setAttribute('data-placeholder','Type verse text here…');
+  body.innerHTML=htmlContent||'';
+
+  buildVerseToolbar(toolbar,body);
+
+  row.appendChild(header);
+  row.appendChild(toolbar);
+  row.appendChild(body);
   list.appendChild(row);
   renumberVerseRows();
 }
 
-function removeVerseRow(btn) {
-  btn.closest('.verse-row').remove();
-  renumberVerseRows();
-}
-
-function renumberVerseRows() {
-  document.querySelectorAll('#verseList .verse-row').forEach((row, i) => {
-    row.querySelector('.verse-num-badge').textContent = toGu(i + 1);
+function renumberVerseRows(){
+  document.querySelectorAll('#verseList .verse-row').forEach((row,i)=>{
+    const label=row.querySelector('.verse-num-label');
+    if(label) label.textContent=toGu(i+1)+'.';
   });
 }
 
-let verseMode = 'individual';
-function setVerseMode(mode) {
-  verseMode = mode;
-  document.getElementById('modeIndividual').style.display = mode === 'individual' ? 'block' : 'none';
-  document.getElementById('modeBulk').style.display       = mode === 'bulk'       ? 'block' : 'none';
-  document.getElementById('modeBtnIndiv').classList.toggle('active', mode === 'individual');
-  document.getElementById('modeBtnBulk').classList.toggle('active',  mode === 'bulk');
+/* ── VERSE MODE TOGGLE ── */
+function setVerseMode(mode){
+  verseMode=mode;
+  document.getElementById('modeIndividual').style.display=mode==='individual'?'block':'none';
+  document.getElementById('modeBulk').style.display      =mode==='bulk'      ?'block':'none';
+  document.getElementById('modeBtnIndiv').classList.toggle('active',mode==='individual');
+  document.getElementById('modeBtnBulk').classList.toggle('active', mode==='bulk');
 
-  if (mode === 'bulk') {
-    // Populate bulk textarea from current verse rows
-    const rows = document.querySelectorAll('#verseList .verse-row textarea');
-    document.getElementById('bulkVerses').value = Array.from(rows).map(r => r.value).join('\n');
+  if(mode==='bulk'){
+    // Convert current rich-text rows to plain text for bulk
+    const rows=document.querySelectorAll('#verseList .verse-row .verse-body');
+    document.getElementById('bulkVerses').value=
+      Array.from(rows).map(r=>r.innerText.replace(/^[0-9૦-૯]+\.\s*/,'')).join('\n');
   } else {
-    // Sync individual rows from bulk textarea
-    const raw = document.getElementById('bulkVerses').value;
-    const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
-    const list = document.getElementById('verseList');
-    list.innerHTML = '';
-    lines.forEach((line, i) => {
-      const text = line.replace(/^[0-9૦-૯]+\.\s*/, '');
-      addVerseRow(text, i);
-    });
+    // Convert bulk text to rich-text rows (plain text only)
+    const raw=document.getElementById('bulkVerses').value;
+    const lines=raw.split('\n').map(l=>l.trim()).filter(Boolean);
+    const list=document.getElementById('verseList');list.innerHTML='';
+    lines.forEach((line,i)=>addVerseRow(line.replace(/^[0-9૦-૯]+\.\s*/,''),i));
   }
 }
 
-function collectVerses() {
-  if (verseMode === 'bulk') {
-    return parseVerses(document.getElementById('bulkVerses').value);
-  } else {
-    const rows = document.querySelectorAll('#verseList .verse-row textarea');
-    return Array.from(rows).map((r, i) => normalizeVerse(r.value, i + 1)).filter(v => v.replace(/^[^.]+\.\s*/, '').trim());
+/* ── COLLECT VERSES FOR SAVE ── */
+function collectVerses(){
+  if(verseMode==='bulk'){
+    return parseVersesFromBulk(document.getElementById('bulkVerses').value);
   }
+  const rows=document.querySelectorAll('#verseList .verse-row .verse-body');
+  const result=[];
+  rows.forEach((body,i)=>{
+    const v=buildVerseString(i+1, body.innerHTML);
+    if(v) result.push(v);
+  });
+  return result;
 }
 
-/* ════════════════════════════════════════════════
+/* ══════════════════════════════════════════════
    NEW CHAPTER
-════════════════════════════════════════════════ */
-function newChapter() {
-  const nextN = chaptersData.chapters.length
-    ? Math.max(...chaptersData.chapters.map(c => c.n)) + 1
-    : 1;
-
-  // Insert placeholder
-  const newCh = { n: nextN, title: '', verses: [] };
-  chaptersData.chapters.push(newCh);
-  currentChapterIdx = chaptersData.chapters.length - 1;
+══════════════════════════════════════════════ */
+function newChapter(){
+  const nextN=chaptersData.chapters.length?Math.max(...chaptersData.chapters.map(c=>c.n))+1:1;
+  chaptersData.chapters.push({n:nextN,title:'',verses:[]});
+  currentChapterIdx=chaptersData.chapters.length-1;
   renderChapterList();
-
-  const panel = document.getElementById('chapterEditor');
-  panel.innerHTML = `
+  const panel=document.getElementById('chapterEditor');
+  panel.innerHTML=`
     <div class="panel-header">
       <h2>New Chapter</h2>
       <div class="btn-group">
         <button class="btn-action save" onclick="saveNewChapter()">💾 Save to GitHub</button>
-        <button class="btn-action" onclick="cancelNewChapter()">✕ Cancel</button>
+        <button class="btn-action"      onclick="cancelNewChapter()">✕ Cancel</button>
       </div>
     </div>
-
     <div class="form-row">
       <label>Chapter Number</label>
       <input type="number" id="chNum" value="${nextN}" min="1">
@@ -919,162 +770,107 @@ function newChapter() {
       <label>Chapter Title (Gujarati)</label>
       <input type="text" id="chTitle" placeholder="અધ્યાયનું શીર્ષક">
     </div>
-
-    <div style="margin-bottom:16px;">
-      <div style="font-size:13px; font-weight:600; color:var(--gold-dk); margin-bottom:8px;">Verses</div>
+    <div>
+      <div style="font-size:13px;font-weight:600;color:var(--gold-dk);margin-bottom:8px;">Verses</div>
       <div class="mode-toggle">
-        <button class="mode-btn active" id="modeBtnIndiv" onclick="setVerseMode('individual')">One by One</button>
-        <button class="mode-btn" id="modeBtnBulk"  onclick="setVerseMode('bulk')">Paste All at Once</button>
+        <button class="mode-btn active" id="modeBtnIndiv" onclick="setVerseMode('individual')">Rich Text (one by one)</button>
+        <button class="mode-btn"        id="modeBtnBulk"  onclick="setVerseMode('bulk')">Paste Whole Chapter</button>
       </div>
       <div id="modeIndividual">
         <div class="verse-list" id="verseList"></div>
         <button class="add-verse-btn" onclick="addVerseRow()">+ Add Verse</button>
       </div>
       <div id="modeBulk" style="display:none;">
-        <textarea id="bulkVerses" rows="18"
-          placeholder="Paste all verses here, one per line."></textarea>
-        <div class="hint-text">One verse per line. Blank lines ignored. Numeral prefixes auto-applied.</div>
+        <textarea class="bulk-ta" id="bulkVerses" rows="20"
+          placeholder="Paste the entire chapter here — one verse per line."></textarea>
+        <div class="hint-text">One verse per line · Blank lines ignored · Numeral prefixes auto-applied · Plain text only</div>
       </div>
-    </div>
-  `;
-  verseMode = 'individual';
-  addVerseRow('', 0);
+    </div>`;
+  verseMode='individual';
+  addVerseRow('',0);
 }
-
-function cancelNewChapter() {
-  chaptersData.chapters.pop();
-  currentChapterIdx = null;
-  renderChapterList();
-  renderEmptyState();
-}
-
-async function saveNewChapter() {
-  const n     = parseInt(document.getElementById('chNum').value);
-  const title = document.getElementById('chTitle').value.trim();
-  const verses = collectVerses();
-
-  if (!title)         { toast('Title is required', true); return; }
-  if (!verses.length) { toast('At least one verse required', true); return; }
-
-  // Check duplicate number
-  const dup = chaptersData.chapters.filter((c, i) => c.n === n && i !== currentChapterIdx);
-  if (dup.length) { toast(`Chapter ${n} already exists`, true); return; }
-
-  chaptersData.chapters[currentChapterIdx] = { n, title, verses };
-  chaptersData.chapters.sort((a, b) => a.n - b.n);
-  currentChapterIdx = chaptersData.chapters.findIndex(c => c.n === n);
-
+function cancelNewChapter(){chaptersData.chapters.pop();currentChapterIdx=null;renderChapterList();renderEmptyState();}
+async function saveNewChapter(){
+  const n=parseInt(document.getElementById('chNum').value);
+  const title=document.getElementById('chTitle').value.trim();
+  const verses=collectVerses();
+  if(!title){toast('Title is required',true);return;}
+  if(!verses.length){toast('At least one verse required',true);return;}
+  const dup=chaptersData.chapters.filter((c,i)=>c.n===n&&i!==currentChapterIdx);
+  if(dup.length){toast(`Chapter ${n} already exists`,true);return;}
+  chaptersData.chapters[currentChapterIdx]={n,title,verses};
+  chaptersData.chapters.sort((a,b)=>a.n-b.n);
+  currentChapterIdx=chaptersData.chapters.findIndex(c=>c.n===n);
   await saveChapters(`Add chapter ${n}: ${title}`);
 }
 
-/* ════════════════════════════════════════════════
-   SAVE CHAPTER EDITS
-════════════════════════════════════════════════ */
-async function saveChapters(commitMsg) {
-  // Collect edits if editing existing chapter
-  if (document.getElementById('chNum')) {
-    const n      = parseInt(document.getElementById('chNum').value);
-    const title  = document.getElementById('chTitle').value.trim();
-    const verses = collectVerses();
-    if (!title)  { toast('Title is required', true); return; }
-    chaptersData.chapters[currentChapterIdx] = { n, title, verses };
-    chaptersData.chapters.sort((a, b) => a.n - b.n);
-    currentChapterIdx = chaptersData.chapters.findIndex(c => c.n === n);
+/* ══════════════════════════════════════════════
+   SAVE CHAPTERS
+══════════════════════════════════════════════ */
+async function saveChapters(commitMsg){
+  if(document.getElementById('chNum')){
+    const n=parseInt(document.getElementById('chNum').value);
+    const title=document.getElementById('chTitle').value.trim();
+    const verses=collectVerses();
+    if(!title){toast('Title is required',true);return;}
+    chaptersData.chapters[currentChapterIdx]={n,title,verses};
+    chaptersData.chapters.sort((a,b)=>a.n-b.n);
+    currentChapterIdx=chaptersData.chapters.findIndex(c=>c.n===n);
   }
-
-  try {
+  try{
     toast('Saving to GitHub…');
-    const json = JSON.stringify(chaptersData, null, 2);
-    const result = await ghPut(`${DATA_PATH}/chapters.json`, json, chaptersSha,
-      commitMsg || `Update chapters.json`);
-    chaptersSha = result.content.sha;
-    renderChapterList();
-    renderChapterEditor();
-    toast('✅ Saved to GitHub!');
-  } catch(e) {
-    toast('Save failed: ' + e.message, true);
-  }
+    const json=JSON.stringify(chaptersData,null,2);
+    const result=await ghPut(`${DATA_PATH}/chapters.json`,json,chaptersSha,commitMsg||'Update chapters.json');
+    chaptersSha=result.content.sha;
+    renderChapterList();renderChapterEditor();toast('✅ Saved to GitHub!');
+  }catch(e){toast('Save failed: '+e.message,true);}
 }
 
-/* ════════════════════════════════════════════════
+/* ══════════════════════════════════════════════
    DELETE CHAPTER
-════════════════════════════════════════════════ */
-let pendingDeleteIdx = null;
-function askDeleteChapter(idx) {
-  pendingDeleteIdx = idx;
-  const ch = chaptersData.chapters[idx];
-  document.getElementById('confirmTitle').textContent = 'Delete Chapter?';
-  document.getElementById('confirmMsg').textContent =
-    `Delete Chapter ${ch.n} — "${ch.title}" with ${ch.verses.length} verse(s)? This cannot be undone.`;
-  document.getElementById('confirmOkBtn').onclick = confirmDeleteChapter;
+══════════════════════════════════════════════ */
+let pendingDeleteIdx=null;
+function askDeleteChapter(idx){
+  pendingDeleteIdx=idx;
+  const ch=chaptersData.chapters[idx];
+  document.getElementById('confirmTitle').textContent='Delete Chapter?';
+  document.getElementById('confirmMsg').textContent=`Delete Chapter ${ch.n} — "${ch.title}" (${ch.verses.length} verses)? This cannot be undone.`;
+  document.getElementById('confirmOkBtn').onclick=confirmDeleteChapter;
   document.getElementById('confirmOverlay').classList.add('show');
 }
-function closeConfirm() {
-  document.getElementById('confirmOverlay').classList.remove('show');
-  pendingDeleteIdx = null;
-}
-async function confirmDeleteChapter() {
+function closeConfirm(){document.getElementById('confirmOverlay').classList.remove('show');pendingDeleteIdx=null;}
+async function confirmDeleteChapter(){
   closeConfirm();
-  const ch = chaptersData.chapters[pendingDeleteIdx];
-  chaptersData.chapters.splice(pendingDeleteIdx, 1);
-  currentChapterIdx = null;
-  try {
+  const ch=chaptersData.chapters[pendingDeleteIdx];
+  chaptersData.chapters.splice(pendingDeleteIdx,1);
+  currentChapterIdx=null;
+  try{
     toast('Deleting…');
-    const json = JSON.stringify(chaptersData, null, 2);
-    const result = await ghPut(`${DATA_PATH}/chapters.json`, json, chaptersSha,
-      `Delete chapter ${ch.n}: ${ch.title}`);
-    chaptersSha = result.content.sha;
-    renderChapterList();
-    renderEmptyState();
-    toast(`✅ Chapter ${ch.n} deleted`);
-  } catch(e) {
-    toast('Delete failed: ' + e.message, true);
-  }
+    const json=JSON.stringify(chaptersData,null,2);
+    const result=await ghPut(`${DATA_PATH}/chapters.json`,json,chaptersSha,`Delete chapter ${ch.n}: ${ch.title}`);
+    chaptersSha=result.content.sha;
+    renderChapterList();renderEmptyState();toast(`✅ Chapter ${ch.n} deleted`);
+  }catch(e){toast('Delete failed: '+e.message,true);}
 }
 
-/* ════════════════════════════════════════════════
-   SAVE HISTORY
-════════════════════════════════════════════════ */
-async function saveHistory() {
-  const content = document.getElementById('historyContent').value;
-  historyData.content = content;
-  try {
-    toast('Saving history to GitHub…');
-    const json = JSON.stringify(historyData, null, 2);
-    const result = await ghPut(`${DATA_PATH}/history.json`, json, historySha,
-      'Update history.json');
-    historySha = result.content.sha;
-    toast('✅ History saved to GitHub!');
-  } catch(e) {
-    toast('Save failed: ' + e.message, true);
-  }
-}
-
-/* ════════════════════════════════════════════════
-   TOAST
-════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════
+   TOAST & UTILS
+══════════════════════════════════════════════ */
 let toastTimer;
-function toast(msg, isError = false) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'show' + (isError ? ' error' : '');
+function toast(msg,isError=false){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='show'+(isError?' error':'');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { el.className = ''; }, isError ? 4000 : 2500);
+  toastTimer=setTimeout(()=>{el.className='';},isError?4000:2500);
 }
-
-/* ════════════════════════════════════════════════
-   UTIL
-════════════════════════════════════════════════ */
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 // Restore session settings
-(function() {
-  if (sessionStorage.getItem('enochRepo')) {
-    document.getElementById('repoInput').value   = sessionStorage.getItem('enochRepo');
-    document.getElementById('branchInput').value = sessionStorage.getItem('enochBranch') || 'main';
-    document.getElementById('pathInput').value   = sessionStorage.getItem('enochPath') || 'data';
+(function(){
+  if(sessionStorage.getItem('enochRepo')){
+    document.getElementById('repoInput').value  =sessionStorage.getItem('enochRepo');
+    document.getElementById('branchInput').value=sessionStorage.getItem('enochBranch')||'main';
+    document.getElementById('pathInput').value  =sessionStorage.getItem('enochPath')||'data';
   }
 })();
 </script>
