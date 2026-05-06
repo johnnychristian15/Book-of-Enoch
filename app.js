@@ -100,9 +100,6 @@ function initUI() {
   }
 }
 
-/* =========================
-   HISTORY PAGE (NOW DYNAMIC)
-========================= */
 function showHistory() {
   const content = document.getElementById("content");
   const resultsDiv = document.getElementById("searchResults");
@@ -118,16 +115,28 @@ function showHistory() {
     return;
   }
 
-  // Convert line breaks into HTML
-  const formattedText = historyData.content
-    .replace(/\n/g, "<br><br>");
-
   content.innerHTML = `
     <h2 style="text-align:center;">${historyData.title}</h2>
-    <div style="line-height:1.6; font-size:1.05em;">
-      ${formattedText}
-    </div>
   `;
+
+  // Render sections dynamically
+  (historyData.sections || []).forEach(section => {
+    const sectionDiv = document.createElement("div");
+    sectionDiv.style.marginBottom = "20px";
+    sectionDiv.style.lineHeight = "1.6";
+    sectionDiv.style.fontSize = "1.05em";
+
+    const heading = document.createElement("h3");
+    heading.innerText = section.heading;
+
+    const text = document.createElement("p");
+    text.innerText = section.text;
+
+    sectionDiv.appendChild(heading);
+    sectionDiv.appendChild(text);
+
+    content.appendChild(sectionDiv);
+  });
 
   window.scrollTo(0, 0);
 }
