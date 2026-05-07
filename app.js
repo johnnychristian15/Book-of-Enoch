@@ -72,6 +72,55 @@ function buildUI() {
   updateProgressLabel();
 }
 
+/* ─── SANITIZE HISTORY HTML ──────────────────────────────── */
+// The rich-text editor can save inline style attributes with
+// fixed pixel widths or white-space:nowrap that break mobile
+// layout. This walks every element and forces fluid sizing
+// before the HTML is injected into the page.
+function sanitizeHistoryHTML(html) {
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+
+  tmp.querySelectorAll("*").forEach(function(el) {
+
+    // Force every element to be contained and word-wrapping
+    el.style.maxWidth    = "100%";
+    el.style.boxSizing   = "border-box";
+    el.style.overflowWrap = "break-word";
+    el.style.wordBreak   = "break-word";
+
+    // Replace any fixed pixel width with fluid 100%
+    if (el.style.width && el.style.width.indexOf("px") !== -1) {
+      el.style.width = "100%";
+    }
+
+    // Remove fixed min-widths that prevent the element shrinking
+    if (el.style.minWidth && el.style.minWidth.indexOf("px") !== -1) {
+      el.style.minWidth = "0";
+    }
+
+    // white-space:nowrap is the single biggest cause of content
+    // running off the right edge on mobile — force it off
+    if (el.style.whiteSpace === "nowrap") {
+      el.style.whiteSpace = "normal";
+    }
+
+    // Tables: make them a scrollable block rather than a layout-breaker
+    if (el.tagName === "TABLE") {
+      el.style.display                 = "block";
+      el.style.width                   = "100%";
+      el.style.overflowX               = "auto";
+      el.style.webkitOverflowScrolling = "touch";
+      el.style.borderCollapse          = "collapse";
+    }
+
+    // Strip legacy HTML width attributes (e.g. <td width="300">)
+    el.removeAttribute("width");
+  });
+
+  return tmp.innerHTML;
+}
+
 /* ─── HISTORY PAGE ───────────────────────────────────────── */
 function showHistory() {
   currentIndex = -1;
@@ -80,12 +129,15 @@ function showHistory() {
   updateProgressLabel();
   updateNavButtons();
 
-  document.getElementById("content").innerHTML = `
+  const content  = document.getElementById("content");
+  const safeHTML = sanitizeHistoryHTML(historyContent);
+
+  content.innerHTML = `
     <h2 style="text-align:center; font-family:Georgia,serif; color:#5c3a1e; margin-bottom:20px;">
       હનોખના પુસ્તકનો ઇતિહાસ
     </h2>
-    <div style="line-height:1.85; color:#2c2c2c; padding:10px;">
-      ${historyContent}
+    <div style="width:100%; box-sizing:border-box; overflow:hidden; line-height:1.85; color:#2c2c2c; padding:10px; overflow-wrap:break-word; word-break:break-word; white-space:normal;">
+      ${safeHTML}
     </div>
   `;
 }
