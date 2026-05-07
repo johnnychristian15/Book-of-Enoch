@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter Prefix Cleaner</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:wght@400;600&display=swap');
+:root {
+  --parchment:#f4ecd8; --parchment-dk:#e4d5b7; --ink:#2b1d0e;
+  --ink-mid:#5a3e28; --gold:#8b5e34; --gold-dk:#5c3a1e;
+  --border:#c2a97a; --green:#2d5a27; --crimson:#7a1e1e;
+  --shadow:rgba(43,29,14,0.18); --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'EB Garamond',Georgia,serif;background:var(--parchment);
+  background-image:url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+  color:var(--ink);min-height:100vh;display:flex;align-items:center;
+  justify-content:center;padding:20px;}
+.card{background:rgba(255,248,235,0.97);border:1px solid var(--border);
+  border-radius:var(--radius);padding:40px;max-width:640px;width:100%;
+  box-shadow:0 8px 32px var(--shadow);}
+.crown{font-size:36px;text-align:center;margin-bottom:10px;}
+h1{font-family:'Cinzel',serif;font-size:20px;color:var(--gold-dk);
+  text-align:center;margin-bottom:6px;}
+.sub{font-size:14px;color:var(--ink-mid);text-align:center;
+  margin-bottom:28px;font-style:italic;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--gold-dk);
+  margin-bottom:5px;letter-spacing:.4px;}
+.field input{width:100%;padding:9px 13px;font-family:'EB Garamond',serif;
+  font-size:15px;background:var(--parchment);border:1px solid var(--border);
+  border-radius:6px;color:var(--ink);outline:none;}
+.field input:focus{border-color:var(--gold);}
+.field .hint{font-size:12px;color:var(--ink-mid);margin-top:4px;font-style:italic;}
+.btn{width:100%;padding:12px;border:none;border-radius:6px;
+  font-family:'Cinzel',serif;font-size:15px;cursor:pointer;
+  transition:background .2s;margin-top:6px;}
+.btn-primary{background:var(--gold-dk);color:var(--parchment);}
+.btn-primary:hover{background:var(--gold);}
+.btn-primary:disabled{opacity:.5;cursor:default;}
+.btn-save{background:var(--green);color:#fff;}
+.btn-save:hover{background:#3a7233;}
+.btn-save:disabled{opacity:.5;cursor:default;}
+#log{margin-top:22px;display:none;}
+#log h2{font-family:'Cinzel',serif;font-size:14px;color:var(--gold-dk);
+  margin-bottom:10px;}
+#logBox{background:#fff8f0;border:1px solid var(--border);border-radius:6px;
+  padding:14px;font-size:13px;line-height:1.8;max-height:340px;
+  overflow-y:auto;white-space:pre-wrap;font-family:monospace;}
+#summary{margin-top:14px;padding:12px 16px;border-radius:6px;
+  font-size:14px;display:none;}
+.summary-ok{background:#e8f5e9;border:1px solid #a5d6a7;color:#1b5e20;}
+.summary-warn{background:#fff3e0;border:1px solid #ffcc80;color:#e65100;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="crown">🧹</div>
+  <h1>Chapter Prefix Cleaner</h1>
+  <p class="sub">Removes corrupted verse prefixes from all chapters in one shot</p>
+
+  <div class="field">
+    <label>GitHub Personal Access Token</label>
+    <input type="password" id="token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+  </div>
+  <div class="field">
+    <label>Repository (owner/repo)</label>
+    <input type="text" id="repo" placeholder="JohnnyChristian/Book-of-Enoch">
+  </div>
+  <div class="field">
+    <label>Branch</label>
+    <input type="text" id="branch" value="main">
+  </div>
+  <div class="field">
+    <label>Path to chapters.json</label>
+    <input type="text" id="path" value="data/chapters.json">
+    <div class="hint">Full path from repo root, e.g. data/chapters.json</div>
+  </div>
+
+  <button class="btn btn-primary" id="scanBtn" onclick="scan()">
+    🔍 Scan &amp; Preview Fixes
+  </button>
+  <button class="btn btn-save" id="saveBtn" onclick="save()" style="display:none;margin-top:10px;">
+    💾 Apply Fixes &amp; Save to GitHub
+  </button>
+
+  <div id="log">
+    <h2>Preview of changes</h2>
+    <div id="logBox"></div>
+  </div>
+  <div id="summary"></div>
+</div>
+
+<script>
+// ── Gujarati digit range via Unicode escapes (corruption-proof) ──
+// U+0AE6 = ૦  through  U+0AEF = ૯
+const GU = '\u0AE6\u0AE7\u0AE8\u0AE9\u0AEA\u0AEB\u0AEC\u0AED\u0AEE\u0AEF';
+
+// Matches any leading numeral prefix made of ASCII digits or Gujarati digits,
+// followed by a dot and optional whitespace — anywhere it appears, not just start,
+// because corruption sometimes inserts extra bytes before the real prefix.
+const PREFIX_RE = /^[\s\S]*?([\d\u0AE6-\u0AEF]+)\.\s*/;
+
+// Also matches things like  «.  ¦.  ».  caused by UTF-8 corruption of ૧. ૨. etc.
+// These show up as non-ASCII, non-Gujarati characters followed by a dot.
+const CORRUPT_RE = /^[^\w\s\u0A80-\u0AFF<]{1,6}\.\s*/;
+
+let cleanedData = null;
+let fileSha     = null;
+let TOKEN, REPO, BRANCH, FILE_PATH;
+
+/* ── GitHub helpers ── */
+async function ghGet(path) {
+  const r = await fetch(
+    `https://api.github.com/repos/${REPO}/contents/${path}?ref=${BRANCH}`,
+    { headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json' } }
+  );
+  if (!r.ok) throw new Error(`GET ${r.status}: ${await r.text()}`);
+  return r.json();
+}
+
+async function ghPut(path, content, sha, message) {
+  const body = {
+    message,
+    content: btoa(unescape(encodeURIComponent(content))),
+    branch: BRANCH,
+    sha
+  };
+  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `token ${TOKEN}`,
+      Accept: 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error(`PUT ${r.status}: ${await r.text()}`);
+  return r.json();
+}
+
+function ghDecode(b64) {
+  return decodeURIComponent(escape(atob(b64.replace(/\n/g, ''))));
+}
+
+/* ── Core: clean a single verse string ── */
+function cleanVerse(verseStr, verseNum) {
+  // The verse is stored as "PREFIX. body_html"
+  // PREFIX may be: correct Gujarati (૧), ASCII (1), or corrupted («, ¦, », etc.)
+  // Strategy: find where the real body content starts after any prefix+dot,
+  // then re-attach the correct Gujarati numeral.
+
+  const s = verseStr.trim();
+
+  // 1. Try to strip a normal Gujarati or ASCII numeral prefix
+  let body = s.replace(/^[\d\u0AE6-\u0AEF]+\.\s*/, '');
+
+  // 2. If nothing was stripped, the prefix is corrupted garbage chars —
+  //    strip anything before the first space or Gujarati letter or HTML tag
+  if (body === s) {
+    // Strip leading non-Gujarati, non-ASCII-letter, non-tag characters + dot
+    body = s.replace(/^[^\u0A80-\u0AFF\w<]+\.?\s*/, '');
+  }
+
+  // 3. Build the clean verse with correct Gujarati prefix
+  const prefix = toGu(verseNum);
+  return `${prefix}. ${body.trim()}`;
+}
+
+function toGu(n) {
+  return String(n).split('').map(d => GU[+d]).join('');
+}
+
+/* ── Scan ── */
+async function scan() {
+  TOKEN     = document.getElementById('token').value.trim();
+  REPO      = document.getElementById('repo').value.trim();
+  BRANCH    = document.getElementById('branch').value.trim() || 'main';
+  FILE_PATH = document.getElementById('path').value.trim();
+
+  if (!TOKEN || !REPO) { alert('Please fill in token and repository.'); return; }
+
+  const btn = document.getElementById('scanBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Loading…';
+
+  try {
+    const file    = await ghGet(FILE_PATH);
+    fileSha       = file.sha;
+    const data    = JSON.parse(ghDecode(file.content));
+    cleanedData   = JSON.parse(JSON.stringify(data)); // deep copy
+
+    let totalVerses  = 0;
+    let fixedVerses  = 0;
+    const lines      = [];
+
+    cleanedData.chapters.forEach(ch => {
+      ch.verses = ch.verses.map((v, i) => {
+        totalVerses++;
+        const fixed = cleanVerse(v, i + 1);
+        if (fixed !== v) {
+          fixedVerses++;
+          // Show a short before/after — strip HTML tags for readability
+          const before = v.replace(/<[^>]+>/g, '').substring(0, 60);
+          const after  = fixed.replace(/<[^>]+>/g, '').substring(0, 60);
+          lines.push(`Ch${ch.n} v${i+1}:\n  BEFORE: ${before}\n  AFTER:  ${after}\n`);
+        }
+        return fixed;
+      });
+    });
+
+    // Show log
+    const logDiv = document.getElementById('log');
+    const logBox = document.getElementById('logBox');
+    logDiv.style.display = 'block';
+
+    if (fixedVerses === 0) {
+      logBox.textContent = '✅ No corrupted prefixes found. All verses look clean!';
+      document.getElementById('summary').style.display = 'block';
+      document.getElementById('summary').className = 'summary-ok';
+      document.getElementById('summary').textContent =
+        `Scanned ${totalVerses} verses across ${cleanedData.chapters.length} chapters. Nothing needs fixing.`;
+      document.getElementById('saveBtn').style.display = 'none';
+    } else {
+      logBox.textContent = lines.join('\n');
+      document.getElementById('summary').style.display = 'block';
+      document.getElementById('summary').className = 'summary-warn';
+      document.getElementById('summary').textContent =
+        `Found ${fixedVerses} verse(s) to fix across ${cleanedData.chapters.length} chapters. ` +
+        `Review the changes above, then click "Apply Fixes".`;
+      document.getElementById('saveBtn').style.display = 'block';
+    }
+
+  } catch(e) {
+    alert('Error: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔍 Scan & Preview Fixes';
+  }
+}
+
+/* ── Save ── */
+async function save() {
+  if (!cleanedData) { alert('Run Scan first.'); return; }
+
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving…';
+
+  try {
+    const json   = JSON.stringify(cleanedData, null, 2);
+    await ghPut(FILE_PATH, json, fileSha, 'Fix corrupted verse prefixes in all chapters');
+
+    document.getElementById('summary').className = 'summary-ok';
+    document.getElementById('summary').textContent =
+      '✅ All fixes saved to GitHub successfully! You can close this page.';
+    btn.style.display = 'none';
+
+  } catch(e) {
+    alert('Save failed: ' + e.message);
+    btn.disabled = false;
+    btn.textContent = '💾 Apply Fixes & Save to GitHub';
+  }
+}
+
+// Restore session settings
+(function() {
+  if (sessionStorage.getItem('enochRepo')) {
+    document.getElementById('repo').value   = sessionStorage.getItem('enochRepo');
+    document.getElementById('branch').value = sessionStorage.getItem('enochBranch') || 'main';
+    const p = sessionStorage.getItem('enochPath') || 'data';
+    document.getElementById('path').value   = p + '/chapters.json';
+  }
+})();
+</script>
+</body>
+</html>
