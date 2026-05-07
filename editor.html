@@ -299,12 +299,13 @@ function stripPrefix(html){
 }
 
 // Build the verse string stored in JSON:
-// The verse body already contains the prefix typed by the user —
-// just save it as-is. Do NOT add another prefix.
+// prefix as plain text + the rest of the HTML
 function buildVerseString(num, html){
   const inner = html.trim();
+  // If empty, skip
   if(!inner || inner==='<br>') return null;
-  return inner;
+  const stripped = stripPrefix(inner);
+  return `${toGu(num)}. ${stripped}`;
 }
 
 function parseVersesFromBulk(raw){
@@ -666,8 +667,7 @@ function renderChapterEditor(){
 function renderVerseRows(verses){
   const list=document.getElementById('verseList');
   list.innerHTML='';
-  // Load full verse as-is — prefix is already part of the content
-  verses.forEach((v,i)=>addVerseRow(v,i));
+  verses.forEach((v,i)=>addVerseRow(verseBodyHTML(v),i));
 }
 
 function addVerseRow(htmlContent='', insertAt=null){
@@ -681,7 +681,7 @@ function addVerseRow(htmlContent='', insertAt=null){
 
   const header=document.createElement('div');
   header.className='verse-row-header';
-  header.innerHTML=`<span class="verse-num-label" style="font-size:11px;color:var(--ink-mid);font-style:italic;">verse ${num}</span>`;
+  header.innerHTML=`<span class="verse-num-label">${toGu(num)}.</span>`;
   const delBtn=document.createElement('button');
   delBtn.className='verse-del-btn';delBtn.title='Delete verse';delBtn.textContent='✕ Delete verse';
   delBtn.onclick=()=>{row.remove();renumberVerseRows();};
@@ -709,7 +709,7 @@ function addVerseRow(htmlContent='', insertAt=null){
 function renumberVerseRows(){
   document.querySelectorAll('#verseList .verse-row').forEach((row,i)=>{
     const label=row.querySelector('.verse-num-label');
-    if(label) label.textContent='verse '+(i+1);
+    if(label) label.textContent=toGu(i+1)+'.';
   });
 }
 
@@ -725,13 +725,13 @@ function setVerseMode(mode){
     // Convert current rich-text rows to plain text for bulk
     const rows=document.querySelectorAll('#verseList .verse-row .verse-body');
     document.getElementById('bulkVerses').value=
-      Array.from(rows).map(r=>r.innerText).join('\n');
+      Array.from(rows).map(r=>r.innerText.replace(/^[0-9૦-૯]+\.\s*/,'')).join('\n');
   } else {
     // Convert bulk text to rich-text rows (plain text only)
     const raw=document.getElementById('bulkVerses').value;
     const lines=raw.split('\n').map(l=>l.trim()).filter(Boolean);
     const list=document.getElementById('verseList');list.innerHTML='';
-    lines.forEach((line,i)=>addVerseRow(line,i));
+    lines.forEach((line,i)=>addVerseRow(line.replace(/^[0-9૦-૯]+\.\s*/,''),i));
   }
 }
 
