@@ -725,13 +725,13 @@ function setVerseMode(mode){
     // Convert current rich-text rows to plain text for bulk
     const rows=document.querySelectorAll('#verseList .verse-row .verse-body');
     document.getElementById('bulkVerses').value=
-      Array.from(rows).map(r=>r.innerText.replace(/^[0-9૦-૯]+\.\s*/,'')).join('\n');
+      Array.from(rows).map(r=>r.innerText).join('\n');
   } else {
     // Convert bulk text to rich-text rows (plain text only)
     const raw=document.getElementById('bulkVerses').value;
     const lines=raw.split('\n').map(l=>l.trim()).filter(Boolean);
     const list=document.getElementById('verseList');list.innerHTML='';
-    lines.forEach((line,i)=>addVerseRow(line.replace(/^[0-9૦-૯]+\.\s*/,''),i));
+    lines.forEach((line,i)=>addVerseRow(line,i));
   }
 }
 
