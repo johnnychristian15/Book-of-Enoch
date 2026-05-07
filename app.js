@@ -87,7 +87,7 @@ function sanitizeHistoryHTML(html) {
     el.style.maxWidth    = "100%";
     el.style.boxSizing   = "border-box";
     el.style.overflowWrap = "break-word";
-    el.style.wordBreak   = "break-word";
+    el.style.wordBreak   = "normal";
 
     // Replace any fixed pixel width with fluid 100%
     if (el.style.width && el.style.width.indexOf("px") !== -1) {
@@ -136,7 +136,7 @@ function showHistory() {
     <h2 style="text-align:center; font-family:Georgia,serif; color:#5c3a1e; margin-bottom:20px;">
       હનોખના પુસ્તકનો ઇતિહાસ
     </h2>
-    <div style="width:100%; box-sizing:border-box; overflow:hidden; line-height:1.85; color:#2c2c2c; padding:10px; overflow-wrap:break-word; word-break:break-word; white-space:normal;">
+    <div style="width:100%; box-sizing:border-box; overflow:hidden; line-height:1.85; color:#2c2c2c; padding:10px; overflow-wrap:break-word; word-break:normal; white-space:normal;">
       ${safeHTML}
     </div>
   `;
