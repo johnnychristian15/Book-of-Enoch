@@ -73,49 +73,130 @@ function buildUI() {
 }
 
 /* ─── SANITIZE HISTORY HTML ──────────────────────────────── */
-// The rich-text editor can save inline style attributes with
-// fixed pixel widths or white-space:nowrap that break mobile
-// layout. This walks every element and forces fluid sizing
-// before the HTML is injected into the page.
+// Handles both clean editor HTML and Microsoft Word HTML.
+// Word wraps every individual word in its own <span> with
+// font-family and mso-* styles — this collapses those spans
+// into plain text and strips all layout-breaking styles.
+
 function sanitizeHistoryHTML(html) {
   const tmp = document.createElement("div");
   tmp.innerHTML = html;
 
+  // ── Step 1: Remove Word-specific tags entirely ──────────
+  // <o:p> tags are Word-only and contain only &nbsp; noise
+  tmp.querySelectorAll("o\\:p, [class*='Mso']").forEach(function(el) {
+    // If it only contains whitespace / &nbsp;, remove it fully
+    if (el.textContent.trim() === "" || el.textContent === "\u00a0") {
+      el.remove();
+    }
+  });
+
+  // ── Step 2: Collapse pure font-family spans ─────────────
+  // Word wraps every word in <span style="font-family:Nirmala UI,sans-serif">
+  // These spans carry no meaningful formatting — unwrap them.
+  tmp.querySelectorAll("span").forEach(function(span) {
+    const s = span.style;
+    // A "Word word-span" has only font-family set and nothing else useful
+    const hasOnlyFont = s.fontFamily &&
+      !s.color &&
+      !s.backgroundColor &&
+      !s.fontWeight &&
+      !s.fontStyle &&
+      !s.fontSize &&
+      !s.textDecoration;
+
+    if (hasOnlyFont) {
+      // Replace the span with its children (unwrap)
+      while (span.firstChild) {
+        span.parentNode.insertBefore(span.firstChild, span);
+      }
+      span.remove();
+    }
+  });
+
+  // ── Step 3: Strip layout-breaking styles from all elements
+  const SAFE_INLINE_PROPS = new Set([
+    "color", "backgroundColor", "fontWeight", "fontStyle",
+    "fontSize", "textDecoration", "textDecorationLine", "textAlign"
+  ]);
+
+  const BLOCK_TAGS = new Set([
+    "DIV","P","H1","H2","H3","H4","H5","H6",
+    "LI","UL","OL","BLOCKQUOTE","TD","TH","TR","THEAD","TBODY"
+  ]);
+
   tmp.querySelectorAll("*").forEach(function(el) {
+    const tag = el.tagName;
 
-    // Force every element to be contained and word-wrapping
-    el.style.maxWidth    = "100%";
-    el.style.boxSizing   = "border-box";
-    el.style.overflowWrap = "break-word";
-    el.style.wordBreak   = "normal";
-
-    // Replace any fixed pixel width with fluid 100%
-    if (el.style.width && el.style.width.indexOf("px") !== -1) {
-      el.style.width = "100%";
+    if (tag === "TABLE") {
+      el.removeAttribute("style");
+      el.removeAttribute("width");
+      el.removeAttribute("border");
+      el.removeAttribute("cellspacing");
+      el.removeAttribute("cellpadding");
+      el.style.display        = "block";
+      el.style.width          = "100%";
+      el.style.maxWidth       = "100%";
+      el.style.overflowX      = "auto";
+      el.style.borderCollapse = "collapse";
+      el.style.boxSizing      = "border-box";
+      return;
     }
 
-    // Remove fixed min-widths that prevent the element shrinking
-    if (el.style.minWidth && el.style.minWidth.indexOf("px") !== -1) {
-      el.style.minWidth = "0";
-    }
-
-    // white-space:nowrap is the single biggest cause of content
-    // running off the right edge on mobile — force it off
-    if (el.style.whiteSpace === "nowrap") {
+    if (tag === "TD" || tag === "TH") {
+      const align = el.style.textAlign;
+      el.removeAttribute("style");
+      el.removeAttribute("width");
+      el.removeAttribute("height");
+      el.style.padding    = "8px 10px";
+      el.style.border     = "1px solid #c2a97a";
       el.style.whiteSpace = "normal";
+      el.style.overflowWrap = "break-word";
+      el.style.wordBreak  = "normal";
+      if (align) el.style.textAlign = align;
+      return;
     }
 
-    // Tables: make them a scrollable block rather than a layout-breaker
-    if (el.tagName === "TABLE") {
-      el.style.display                 = "block";
-      el.style.width                   = "100%";
-      el.style.overflowX               = "auto";
-      el.style.webkitOverflowScrolling = "touch";
-      el.style.borderCollapse          = "collapse";
+    if (BLOCK_TAGS.has(tag)) {
+      const align = el.style.textAlign;
+      el.removeAttribute("style");
+      el.removeAttribute("width");
+      // Remove all Word class attributes
+      el.removeAttribute("class");
+      if (align) el.style.textAlign = align;
+      el.style.maxWidth    = "100%";
+      el.style.boxSizing   = "border-box";
+      el.style.whiteSpace  = "normal";
+      el.style.overflowWrap = "break-word";
+      el.style.wordBreak   = "normal";
+      return;
     }
 
-    // Strip legacy HTML width attributes (e.g. <td width="300">)
+    // Inline elements: keep only safe formatting props
+    if (el.style && el.style.length > 0) {
+      const saved = {};
+      SAFE_INLINE_PROPS.forEach(function(prop) {
+        if (el.style[prop]) saved[prop] = el.style[prop];
+      });
+      el.removeAttribute("style");
+      el.removeAttribute("class");
+      Object.keys(saved).forEach(function(prop) {
+        el.style[prop] = saved[prop];
+      });
+    } else {
+      el.removeAttribute("class");
+    }
+
     el.removeAttribute("width");
+    el.removeAttribute("height");
+  });
+
+  // ── Step 4: Remove empty paragraphs left by Word ─────────
+  // Word inserts many <p>&nbsp;</p> spacer paragraphs
+  tmp.querySelectorAll("p").forEach(function(p) {
+    if (p.textContent.trim() === "" || p.textContent === "\u00a0") {
+      p.remove();
+    }
   });
 
   return tmp.innerHTML;
@@ -136,7 +217,7 @@ function showHistory() {
     <h2 style="text-align:center; font-family:Georgia,serif; color:#5c3a1e; margin-bottom:20px;">
       હનોખના પુસ્તકનો ઇતિહાસ
     </h2>
-    <div style="width:100%; box-sizing:border-box; overflow:hidden; line-height:1.85; color:#2c2c2c; padding:10px; overflow-wrap:break-word; word-break:normal; white-space:normal;">
+    <div class="history-body">
       ${safeHTML}
     </div>
   `;
@@ -165,27 +246,20 @@ function renderChapter(index) {
     const div = document.createElement("div");
     div.className = "verse";
 
-    // Split off the leading Gujarati or ASCII numeral prefix (e.g. "૧. ")
-    // The rest may be plain text OR HTML (with bold, color, etc.)
     const match = v.match(/^([0-9૦-૯]+)\.\s*([\s\S]*)/);
 
     if (match) {
-      const numPart  = match[1];
-      const bodyPart = match[2];
-
-      const numSpan  = document.createElement("span");
+      const numSpan = document.createElement("span");
       numSpan.className = "verse-number";
-      numSpan.textContent = numPart + ".";
+      numSpan.textContent = match[1] + ".";
 
       const bodySpan = document.createElement("span");
-      // Use innerHTML so that bold, color, italic tags render properly
-      bodySpan.innerHTML = bodyPart;
+      bodySpan.innerHTML = match[2];
 
       div.appendChild(numSpan);
       div.appendChild(document.createTextNode(" "));
       div.appendChild(bodySpan);
     } else {
-      // No numeral prefix — render as HTML anyway in case it's formatted
       div.innerHTML = v;
     }
 
