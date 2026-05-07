@@ -292,3 +292,36 @@ html, body {
   overflow-x: hidden;
   max-width: 100%;
 }
+
+/* ─── NUCLEAR MOBILE CONTAINMENT ────────────────────────── */
+/* Belt-and-suspenders: lock everything to viewport width    */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+}
+
+#content {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  white-space: normal !important;
+  box-sizing: border-box !important;
+}
+
+/* Every child element injected into #content via innerHTML  */
+#content * {
+  max-width: 100% !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  white-space: normal !important;
+  box-sizing: border-box !important;
+}
+
+/* Tables scroll horizontally inside their own box           */
+#content table {
+  display: block !important;
+  overflow-x: auto !important;
+  white-space: normal !important;
+}
