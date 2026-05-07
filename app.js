@@ -246,7 +246,7 @@ function renderChapter(index) {
     const div = document.createElement("div");
     div.className = "verse";
 
-    const match = v.match(/^([0-9૦-૯]+)\.\s*([\s\S]*)/);
+    const match = v.match(/^([\d\u0AE6-\u0AEF]+)\.\s*([\s\S]*)/);
 
     if (match) {
       const numSpan = document.createElement("span");
